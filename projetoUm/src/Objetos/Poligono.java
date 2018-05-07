@@ -18,19 +18,20 @@ import java.util.logging.Logger;
  * @author onascimento
  */
 public class Poligono {
+
     public ArrayList<Ponto> pontos;
     public int tipo;
+
     /*
         1 - Linhas
         2 - Circunferencia
         3 - Curvas
         4 - Clipping
-    */
-
+     */
     public void setPontos(ArrayList<Ponto> pontos) {
         this.pontos = pontos;
     }
-    
+
     private Poligono(ArrayList<Ponto> ponto) {
         this.setPontos(ponto);
     }
@@ -39,8 +40,8 @@ public class Poligono {
         pontos = new ArrayList<Ponto>();
         tipo = 1;
     }
-    
-    public Poligono(int tipo){
+
+    public Poligono(int tipo) {
         pontos = new ArrayList<Ponto>();
         this.tipo = tipo;
     }
@@ -53,21 +54,20 @@ public class Poligono {
         //System.out.println("Tamanho vetor ponto: "+this.getPontos().size());
         Ponto aux = null;
         Graphics g = c.getGraphics();
-        
-        
-        if(tipo == 4){
+
+        if (tipo == 4) {
             g.setColor(Color.YELLOW);
-        }else{
+        } else {
             g.setColor(Color.WHITE);
         }
-        
-        for(Ponto p : pontos){
-            if(aux == null){
+
+        for (Ponto p : pontos) {
+            if (aux == null) {
                 aux = p;
-            }else{
+            } else {
                 Ponto aux2 = new Ponto();
-                g.drawLine(aux2.XwvP((int) aux.getX(), mundo, vP),aux2.YwvP((int) aux.getY(), mundo, vP), 
-                           aux2.XwvP((int) p.getX(), mundo, vP),aux2.YwvP((int) p.getY(), mundo, vP));
+                g.drawLine(aux2.XwvP((int) aux.getX(), mundo, vP), aux2.YwvP((int) aux.getY(), mundo, vP),
+                        aux2.XwvP((int) p.getX(), mundo, vP), aux2.YwvP((int) p.getY(), mundo, vP));
                 aux = p;
             }
         }
@@ -141,15 +141,13 @@ public class Poligono {
         double dX, dY, tamanho;
         Graphics g = c.getGraphics();
         int i = this.getPontos().size();
-        
-        
-        if(tipo == 4){
+
+        if (tipo == 4) {
             g.setColor(Color.YELLOW);
-        }else{
+        } else {
             g.setColor(Color.BLACK);
         }
-        
-        
+
         if (i > 1) {
             for (int j = 0; j < i - 1; j++) {
                 Ponto pI = new Ponto(this.getPontos().get(j).getX(), this.getPontos().get(j).getY());
@@ -165,7 +163,7 @@ public class Poligono {
                     dX = (pF.getX() - pI.getX()) / tamanho;
                     dY = (pF.getY() - pI.getY()) / tamanho;
                     Ponto pAux = new Ponto(pI.getX() + (0.5 * Math.signum(dX)), pI.getY() + (0.5 * Math.signum(dY)));
-                    
+
                     for (int k = 0; k < tamanho; k++) {
                         g.drawLine(pAux.XvpM((int) pAux.getX(), vP, mundo), pAux.YvpM((int) pAux.getY(), vP, mundo), pAux.XvpM((int) ((int) pAux.getX()), vP, mundo), pAux.YvpM((int) ((int) pAux.getY()), vP, mundo));
                         pAux.setX(pAux.getX() + dX);
@@ -180,15 +178,13 @@ public class Poligono {
         int dx, dy, erro;
         Ponto aux;
         Graphics g = c.getGraphics();
-        
-        
-        if(tipo == 4){
+
+        if (tipo == 4) {
             g.setColor(Color.YELLOW);
-        }else{
+        } else {
             g.setColor(Color.BLUE);
         }
-        
-        
+
         int i = this.pontos.size();
         if (i > 1) {
             erro = 0;
@@ -283,13 +279,13 @@ public class Poligono {
 
     }
 
-    public Poligono drawCirculo(Ponto p1,Ponto p2) {
+    public Poligono drawCirculo(Ponto p1, Ponto p2) {
         //Graphics g = c.getGraphics();
         Poligono auxPol = new Poligono();
-        Ponto auxM[][] = new Ponto[8][CalculaRaio(p1,p2)];
+        Ponto auxM[][] = new Ponto[8][CalculaRaio(p1, p2)];
         ArrayList<ArrayList<Ponto>> lista = new ArrayList<>();
         int x, y, p, r, i = 0;
-        r = CalculaRaio(p1,p2);
+        r = CalculaRaio(p1, p2);
         x = 0;
         //y = Integer.parseInt(JOptionPane.showInputDialog("Informe o raio", r));
         y = r;
@@ -317,30 +313,30 @@ public class Poligono {
             auxM[7][i] = this.pontosCirculo(-x, y);
             i++;
         }
-        
+
         for (int j = 0; j < 8; j++) {
             for (int k = 0; k < i; k++) {
                 auxPol.getPontos().add(auxM[j][k]);
             }
         }
-        
+
         //auxPol.setTypeF(0);
         //auxPol.draw(c, viewPort, mundo);
         return auxPol;
     }
-    
-    public int CalculaRaio(Ponto p1, Ponto p2){
-        int raio = (int) Math.sqrt(((p1.getX() - p2.getX())*(p1.getX() - p2.getX())) + ((p1.getY() - p2.getY())*(p1.getY() - p2.getY())));
+
+    public int CalculaRaio(Ponto p1, Ponto p2) {
+        int raio = (int) Math.sqrt(((p1.getX() - p2.getX()) * (p1.getX() - p2.getX())) + ((p1.getY() - p2.getY()) * (p1.getY() - p2.getY())));
         return raio;
     }
-    
+
     public void clip(float xmin, float ymin, float xmax, float ymax) {
 // Sutherland-Hodgman polygon clipping:
         Poligono poly1 = new Poligono();
         int n;
         Ponto a, b;
         boolean aIns, bIns;
-        
+
         tipo = 4;
 // Tells whether A or B is on the same side as the rectangle
 // Clip against x == xmax:
@@ -424,8 +420,141 @@ public class Poligono {
         }
         pontos = poly1.pontos;
     }
-    
-    Ponto vertexAt(int i){
+
+    Ponto vertexAt(int i) {
         return pontos.get(i);
+    }
+
+    public void CalculaCurvaCasteljau() {
+        Ponto a = this.getPontos().get(0);
+        Ponto b = this.getPontos().get(1);
+        Ponto c = this.getPontos().get(2);
+        pontos.clear();
+        Ponto meioAB, meioBC;
+        meioAB = meioReta(a, b);
+        meioBC = meioReta(b, c);
+        pontos.add(ladoEsquerdo(a, meioAB, meioReta(meioAB, meioBC)));
+        ladoDireito(meioReta(meioAB, meioBC), meioBC, c);
+    }
+
+    private Ponto meioReta(Ponto a, Ponto b) {
+        return new Ponto((a.getX() + b.getX()) / 2, (a.getY() + b.getY()) / 2);
+    }
+
+    private Ponto ladoEsquerdo(Ponto a, Ponto b, Ponto c) {
+        Ponto meioAB, meioBC;
+        meioAB = meioReta(a, b);
+        meioBC = meioReta(b, c);
+        if ((c.getX() == a.getX()) && (c.getY() == a.getY())) {
+            pontos.add(c);
+            return c;
+        } else {
+            ladoEsquerdo(a, meioAB, meioReta(meioAB, meioBC));
+        }
+        pontos.add(c);
+        return c;
+    }
+
+    private Ponto ladoDireito(Ponto a, Ponto b, Ponto c) {
+        pontos.add(a);
+        Ponto meioAB, meioBC;
+        meioAB = meioReta(a, b);
+        meioBC = meioReta(b, c);
+        if ((c.getX() == a.getX()) && (c.getY() == a.getY())) {
+            pontos.add(a);
+            return a;
+        } else {
+            ladoDireito(meioReta(meioAB, meioBC), meioBC, c);
+        }
+        return a;
+    }
+
+    public float calculaPT(float p1, float p4, float r1, float r4, float m) {
+        float x = p1 * (2 * m * m * m - 3 * m * m + 1) + p4 * (-2 * m * m * m + 3 * m * m) + r1 * (m * m * m - 2 * m * m + m) + r4 * (m * m * m - m * m);
+        return x;
+    }
+
+    public Poligono curvaHermite() {
+        Poligono auxPol = new Poligono();
+        float p1X = (float) this.getPontos().get(0).getX();
+        float p1Y = (float) this.getPontos().get(0).getY();
+        float p4X = (float) this.getPontos().get(3).getX();
+        float p4Y = (float) this.getPontos().get(3).getY();
+
+        float r1X = (float) (this.getPontos().get(1).getX() - p1X);
+        float r1Y = (float) (this.getPontos().get(1).getY() - p1Y);
+        float r4X = (float) (p4X - this.getPontos().get(2).getX());
+        float r4Y = (float) (p4Y - this.getPontos().get(2).getY());
+
+        for (float m = 0; m < 1; m = (float) (m + 0.01)) {
+            float x;
+            float y;
+            x = calculaPT(p1X, p4X, r1X, r4X, m);
+            y = calculaPT(p1Y, p4Y, r1Y, r4Y, m);
+            System.out.println(x + " " + y);
+            Ponto auxP = new Ponto((double) x, (double) y);
+            auxPol.getPontos().add(auxP);
+        }
+
+        return auxPol;
+    }
+
+    public float calculaPTB(float p1, float p2, float p3, float p4, float m) {
+        float x = (float) (p1 * (Math.pow(1 - m, 3)) + p2 * 3 * m * (Math.pow(1 - m, 2)) + 3 * m * m * p3 * (1 - m) + m * m * m * p4);
+        return x;
+    }
+
+    public Poligono curvaBezier() {
+        Poligono auxPol = new Poligono();
+        float p1X = (float) this.getPontos().get(0).getX();
+        float p1Y = (float) this.getPontos().get(0).getY();
+        float p2X = (float) this.getPontos().get(1).getX();
+        float p2Y = (float) this.getPontos().get(1).getY();
+        float p3X = (float) this.getPontos().get(2).getX();
+        float p3Y = (float) this.getPontos().get(2).getY();
+        float p4X = (float) this.getPontos().get(3).getX();
+        float p4Y = (float) this.getPontos().get(3).getY();
+
+//        float r1X = (float) (3*(this.getPontos().get(1).getX() - p1X));
+//        float r1Y = (float) (3*(this.getPontos().get(1).getY() - p1Y));
+//        float r4X = (float) (3*(p4X - this.getPontos().get(2).getX()));
+//        float r4Y = (float) (3*(p4Y - this.getPontos().get(2).getY()));
+        for (float m = 0; m < 1; m = (float) (m + 0.01)) {
+            float x;
+            float y;
+            x = calculaPTB(p1X, p2X, p3X, p4X, m);
+            y = calculaPTB(p1Y, p2Y, p3Y, p4Y, m);
+            System.out.println(x + " " + y);
+            Ponto auxP = new Ponto((double) x, (double) y);
+            auxPol.getPontos().add(auxP);
+        }
+
+        return auxPol;
+    }
+
+    public double calculaBSpline(double p1, double p2, double p3, double p4, double m) {
+        double x = Math.pow(m, 3) * (-p1 / 6 + p2 / 2 - p3 / 2 + p4 / 6) + Math.pow(m, 2) * (p1 / 2 - p2 + p3 / 2) + m * (-p1 / 2 + p3 / 2) + p1 / 4 + 4 * p2 / 6 + p3 / 6;
+        return x;
+    }
+
+    public Poligono bSpline() {
+        Poligono auxPol = new Poligono();
+        int i = getPontos().size();
+        double p1X = this.getPontos().get(i - 4).getX();
+        double p1Y = this.getPontos().get(i - 4).getY();
+        double p2X = this.getPontos().get(i - 3).getX();
+        double p2Y = this.getPontos().get(i - 3).getY();
+        double p3X = this.getPontos().get(i - 2).getX();
+        double p3Y = this.getPontos().get(i - 2).getY();
+        double p4X = this.getPontos().get(i - 1).getX();
+        double p4Y = this.getPontos().get(i - 1).getY();
+        for (double k = 0; k <= 1; k = k + 0.01) {
+            double x = calculaBSpline(p1X, p2X, p3X, p4X, k);
+            double y = calculaBSpline(p1Y, p2Y, p3Y, p4Y, k);
+            Ponto aux = new Ponto(x, y);
+            auxPol.getPontos().add(aux);
+        }
+
+        return auxPol;
     }
 }
