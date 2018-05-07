@@ -10,6 +10,8 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,17 +19,30 @@ import java.util.ArrayList;
  */
 public class Poligono {
     public ArrayList<Ponto> pontos;
+    public int tipo;
+    /*
+        1 - Linhas
+        2 - Circunferencia
+        3 - Curvas
+        4 - Clipping
+    */
 
     public void setPontos(ArrayList<Ponto> pontos) {
         this.pontos = pontos;
     }
     
     private Poligono(ArrayList<Ponto> ponto) {
-        setPontos(ponto);
+        this.setPontos(ponto);
     }
 
     public Poligono() {
         pontos = new ArrayList<Ponto>();
+        tipo = 1;
+    }
+    
+    public Poligono(int tipo){
+        pontos = new ArrayList<Ponto>();
+        this.tipo = tipo;
     }
 
     public ArrayList<Ponto> getPontos() {
@@ -39,7 +54,12 @@ public class Poligono {
         Ponto aux = null;
         Graphics g = c.getGraphics();
         
-        g.setColor(Color.WHITE);
+        
+        if(tipo == 4){
+            g.setColor(Color.YELLOW);
+        }else{
+            g.setColor(Color.WHITE);
+        }
         
         for(Ponto p : pontos){
             if(aux == null){
@@ -53,15 +73,10 @@ public class Poligono {
         }
     }
 
-    public Ponto pontoMedio() {
+    public Ponto pontoMedio(Ponto p1, Ponto p2) {
         Ponto aux = new Ponto();
-        for(Ponto p: pontos){
-            aux.x += p.getX();
-            aux.y += p.getY();
-        }
-        aux.x = aux.getX()/pontos.size();
-        aux.y = aux.getY()/pontos.size();
-        
+        aux.setX((p1.getX() + p2.getX()) / 2);
+        aux.setY((p1.getY() + p2.getY()) / 2);
         return aux;
     }
 
@@ -126,6 +141,15 @@ public class Poligono {
         double dX, dY, tamanho;
         Graphics g = c.getGraphics();
         int i = this.getPontos().size();
+        
+        
+        if(tipo == 4){
+            g.setColor(Color.YELLOW);
+        }else{
+            g.setColor(Color.BLACK);
+        }
+        
+        
         if (i > 1) {
             for (int j = 0; j < i - 1; j++) {
                 Ponto pI = new Ponto(this.getPontos().get(j).getX(), this.getPontos().get(j).getY());
@@ -141,8 +165,7 @@ public class Poligono {
                     dX = (pF.getX() - pI.getX()) / tamanho;
                     dY = (pF.getY() - pI.getY()) / tamanho;
                     Ponto pAux = new Ponto(pI.getX() + (0.5 * Math.signum(dX)), pI.getY() + (0.5 * Math.signum(dY)));
-                    //Ponto pAnterior = new Ponto(pI.getX() + (0.5 * Math.signum(dX)), pI.getY() + (0.5 * Math.signum(dY)));
-                    //g.drawLine((int) this.pontos.get(j).XvpM((int) this.pontos.get(j).x, vP, mundo), (int) this.pontos.get(j).YvpM((int) this.pontos.get(j).y, vP, mundo), (int) this.pontos.get(j).XvpM((int) this.pontos.get(j).x, vP, mundo), (int) this.pontos.get(j).YvpM((int) this.pontos.get(j).y, mundo, vP));
+                    
                     for (int k = 0; k < tamanho; k++) {
                         g.drawLine(pAux.XvpM((int) pAux.getX(), vP, mundo), pAux.YvpM((int) pAux.getY(), vP, mundo), pAux.XvpM((int) ((int) pAux.getX()), vP, mundo), pAux.YvpM((int) ((int) pAux.getY()), vP, mundo));
                         pAux.setX(pAux.getX() + dX);
@@ -157,6 +180,15 @@ public class Poligono {
         int dx, dy, erro;
         Ponto aux;
         Graphics g = c.getGraphics();
+        
+        
+        if(tipo == 4){
+            g.setColor(Color.YELLOW);
+        }else{
+            g.setColor(Color.BLUE);
+        }
+        
+        
         int i = this.pontos.size();
         if (i > 1) {
             erro = 0;
@@ -242,59 +274,158 @@ public class Poligono {
         }
     }
 
-//    public Ponto pontosCirculo(int x, int y) {
-////        /Graphics g = c.getGraphics();
-//        x = (int) (x + this.getPontos().get(0).getX());
-//        y = (int) (y + this.getPontos().get(0).getY());
-//        Ponto auxP = new Ponto(x, y);
-//        return auxP;
-//
-//    }
+    public Ponto pontosCirculo(int x, int y) {
+//        /Graphics g = c.getGraphics();
+        x = (int) (x + this.getPontos().get(0).getX());
+        y = (int) (y + this.getPontos().get(0).getY());
+        Ponto auxP = new Ponto(x, y);
+        return auxP;
 
-//    public Poligono drawCirculo() {
-//        //Graphics g = c.getGraphics();
-//        Poligono auxPol = new Poligono();
-//        Ponto auxM[][] = new Ponto[8][this.getRaio()];
-//        ArrayList<ArrayList<Ponto>> lista = new ArrayList<>();
-//        int x, y, p, r, i = 0;
-//        r = this.getRaio();
-//        x = 0;
-//        //y = Integer.parseInt(JOptionPane.showInputDialog("Informe o raio", r));
-//        y = r;
-//        //this.pontosCirculo(x, y, c, viewPort, mundo);
-//        p = 1 - r;
-//        while (x < y) {
-//            if (p < 0) {
-//                x++;
-//            } else {
-//                x++;
-//                y--;
-//            }
-//            if (p < 0) {
-//                p += 2 * x + 1;
-//            } else {
-//                p += 2 * (x - y) + 1;
-//            }
-//            auxM[0][i] = this.pontosCirculo(x, y);
-//            auxM[1][i] = this.pontosCirculo(y, x);
-//            auxM[2][i] = this.pontosCirculo(y, -x);
-//            auxM[3][i] = this.pontosCirculo(x, -y);
-//            auxM[4][i] = this.pontosCirculo(-x, -y);
-//            auxM[5][i] = this.pontosCirculo(-y, -x);
-//            auxM[6][i] = this.pontosCirculo(-y, x);
-//            auxM[7][i] = this.pontosCirculo(-x, y);
-//            i++;
-//        }
-////        System.out.println(auxM[0][0]+","+lista.get(0).get(0));
-//        
-//        for (int j = 0; j < 8; j++) {
-//            for (int k = 0; k < i; k++) {
-//                auxPol.getPontos().add(auxM[j][k]);
-//            }
-//        }
-//        auxPol.setTypeD(this.getTypeD());
-//        //auxPol.setTypeF(0);
-//        //auxPol.draw(c, viewPort, mundo);
-//        return auxPol;
-//    }
+    }
+
+    public Poligono drawCirculo(Ponto p1,Ponto p2) {
+        //Graphics g = c.getGraphics();
+        Poligono auxPol = new Poligono();
+        Ponto auxM[][] = new Ponto[8][CalculaRaio(p1,p2)];
+        ArrayList<ArrayList<Ponto>> lista = new ArrayList<>();
+        int x, y, p, r, i = 0;
+        r = CalculaRaio(p1,p2);
+        x = 0;
+        //y = Integer.parseInt(JOptionPane.showInputDialog("Informe o raio", r));
+        y = r;
+        //this.pontosCirculo(x, y, c, viewPort, mundo);
+        p = 1 - r;
+        while (x < y) {
+            if (p < 0) {
+                x++;
+            } else {
+                x++;
+                y--;
+            }
+            if (p < 0) {
+                p += 2 * x + 1;
+            } else {
+                p += 2 * (x - y) + 1;
+            }
+            auxM[0][i] = this.pontosCirculo(x, y);
+            auxM[1][i] = this.pontosCirculo(y, x);
+            auxM[2][i] = this.pontosCirculo(y, -x);
+            auxM[3][i] = this.pontosCirculo(x, -y);
+            auxM[4][i] = this.pontosCirculo(-x, -y);
+            auxM[5][i] = this.pontosCirculo(-y, -x);
+            auxM[6][i] = this.pontosCirculo(-y, x);
+            auxM[7][i] = this.pontosCirculo(-x, y);
+            i++;
+        }
+        
+        for (int j = 0; j < 8; j++) {
+            for (int k = 0; k < i; k++) {
+                auxPol.getPontos().add(auxM[j][k]);
+            }
+        }
+        
+        //auxPol.setTypeF(0);
+        //auxPol.draw(c, viewPort, mundo);
+        return auxPol;
+    }
+    
+    public int CalculaRaio(Ponto p1, Ponto p2){
+        int raio = (int) Math.sqrt(((p1.getX() - p2.getX())*(p1.getX() - p2.getX())) + ((p1.getY() - p2.getY())*(p1.getY() - p2.getY())));
+        return raio;
+    }
+    
+    public void clip(float xmin, float ymin, float xmax, float ymax) {
+// Sutherland-Hodgman polygon clipping:
+        Poligono poly1 = new Poligono();
+        int n;
+        Ponto a, b;
+        boolean aIns, bIns;
+        
+        tipo = 4;
+// Tells whether A or B is on the same side as the rectangle
+// Clip against x == xmax:
+        if ((n = pontos.size()) == 0) {
+            return;
+        }
+        b = vertexAt(n - 1);
+        for (int i = 0; i < n; i++) {
+            a = b;
+            b = vertexAt(i);
+            aIns = a.x <= xmax;
+            bIns = b.x <= xmax;
+            if (aIns != bIns) {
+                poly1.pontos.add(new Ponto(xmax,
+                        a.y + (b.y - a.y) * (xmax - a.x) / (b.x - a.x)));
+            }
+            if (bIns) {
+                poly1.pontos.add(b);
+            }
+        }
+        pontos = poly1.pontos;
+        poly1 = new Poligono();
+// Clip against x == xmin:
+        if ((n = pontos.size()) == 0) {
+            return;
+        }
+        b = vertexAt(n - 1);
+        for (int i = 0; i < n; i++) {
+            a = b;
+            b = vertexAt(i);
+            aIns = a.x >= xmin;
+            bIns = b.x >= xmin;
+
+            if (aIns != bIns) {
+                poly1.pontos.add(new Ponto(xmin,
+                        a.y + (b.y - a.y) * (xmin - a.x) / (b.x - a.x)));
+            }
+            if (bIns) {
+                poly1.pontos.add(b);
+            }
+        }
+        pontos = poly1.pontos;
+        poly1 = new Poligono();
+// Clip against y == ymax:
+        if ((n = pontos.size()) == 0) {
+            return;
+        }
+        b = vertexAt(n - 1);
+        for (int i = 0; i < n; i++) {
+            a = b;
+            b = vertexAt(i);
+            aIns = a.y <= ymax;
+            bIns = b.y <= ymax;
+            if (aIns != bIns) {
+                poly1.pontos.add(new Ponto(a.x
+                        + (b.x - a.x) * (ymax - a.y) / (b.y - a.y), ymax));
+            }
+            if (bIns) {
+                poly1.pontos.add(b);
+            }
+        }
+        pontos = poly1.pontos;
+        poly1 = new Poligono();
+// Clip against y == ymin:
+        if ((n = pontos.size()) == 0) {
+            return;
+        }
+        b = vertexAt(n - 1);
+        for (int i = 0; i < n; i++) {
+            a = b;
+            b = vertexAt(i);
+            aIns = a.y >= ymin;
+            bIns = b.y >= ymin;
+            if (aIns != bIns) {
+                poly1.pontos.add(new Ponto(a.x
+                        + (b.x - a.x) * (ymin - a.y) / (b.y - a.y), ymin));
+            }
+            if (bIns) {
+                poly1.pontos.add(b);
+            }
+        }
+        pontos = poly1.pontos;
+    }
+    
+    Ponto vertexAt(int i){
+        return pontos.get(i);
+    }
 }

@@ -17,16 +17,18 @@ import javax.swing.JOptionPane;
  * @author onascimento
  */
 public class Principal extends javax.swing.JFrame {
+
     Display dsp;
     Poligono polAux;
     Ponto pAux;
     Janela viewPort;
     Janela world;
+    Janela clip;
     DefaultListModel listaPoligono;
     DefaultListModel listaPontos;
-    
+
     int AddPoligono;
-    
+
     /**
      * Creates new form Principal
      */
@@ -34,15 +36,15 @@ public class Principal extends javax.swing.JFrame {
         pAux = new Ponto();
         polAux = new Poligono();
         dsp = new Display();
-        
+
         listaPoligono = new DefaultListModel();
         listaPontos = new DefaultListModel();
-        
+
         viewPort = new Janela(0, 0, 500, 500);
         world = new Janela(-250, -250, 250, 250);
-        
+        clip = new Janela(-100, -100, 100, 100);
         AddPoligono = 0;
-        
+
         initComponents();
     }
 
@@ -68,6 +70,7 @@ public class Principal extends javax.swing.JFrame {
         jlbMundo = new javax.swing.JLabel();
         jlbView = new javax.swing.JLabel();
         jcbModDesenho = new javax.swing.JComboBox<>();
+        jbtnDesenha = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jbtnParaCima = new javax.swing.JButton();
         jbtnParaDireita = new javax.swing.JButton();
@@ -76,6 +79,10 @@ public class Principal extends javax.swing.JFrame {
         jbtnParaOrigem = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel3 = new javax.swing.JPanel();
+        jchbX = new javax.swing.JCheckBox();
+        jchbY = new javax.swing.JCheckBox();
+        jbtnRefletir = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jtxtYd1 = new javax.swing.JTextField();
         jtxtXd1 = new javax.swing.JTextField();
@@ -92,10 +99,15 @@ public class Principal extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jbtnEscalonar = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
-        jchbX = new javax.swing.JCheckBox();
-        jchbY = new javax.swing.JCheckBox();
-        jbtnRefletir = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jtxtxMin = new javax.swing.JTextField();
+        jtxtxMax = new javax.swing.JTextField();
+        jtxtyMax = new javax.swing.JTextField();
+        jtxtyMin = new javax.swing.JTextField();
+        jbtnAtualizaMundo = new javax.swing.JButton();
+        jrbLinhas = new javax.swing.JRadioButton();
+        jrbCircunferencia = new javax.swing.JRadioButton();
+        jbtnClipping = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -125,6 +137,11 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        jlsPoligonos.addContainerListener(new java.awt.event.ContainerAdapter() {
+            public void componentAdded(java.awt.event.ContainerEvent evt) {
+                jlsPoligonosComponentAdded(evt);
+            }
+        });
         jlsPoligonos.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jlsPoligonosKeyPressed(evt);
@@ -147,36 +164,43 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel4.setText("Coord. ViewPort: ");
 
-        jlbMundo.setText("Coord");
+        jlbMundo.setText("jLabel5");
 
-        jlbView.setText("Coord");
+        jlbView.setText("jLabel5");
 
         jcbModDesenho.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Metodo de Desenho", "Default", "DDA", "Bresenham" }));
 
+        jbtnDesenha.setText("Desenha Poligono");
+        jbtnDesenha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnDesenhaActionPerformed(evt);
+            }
+        });
+
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jbtnParaCima.setText("↑");
+        jbtnParaCima.setText("^");
         jbtnParaCima.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnParaCimaActionPerformed(evt);
             }
         });
 
-        jbtnParaDireita.setText("→");
+        jbtnParaDireita.setText(">");
         jbtnParaDireita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnParaDireitaActionPerformed(evt);
             }
         });
 
-        jbtnParaEsquerda.setText("←");
+        jbtnParaEsquerda.setText("<");
         jbtnParaEsquerda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnParaEsquerdaActionPerformed(evt);
             }
         });
 
-        jbtnParaBaixo.setText("↓");
+        jbtnParaBaixo.setText("v");
         jbtnParaBaixo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnParaBaixoActionPerformed(evt);
@@ -229,16 +253,50 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jchbX.setText("X");
 
-        jtxtYd1.setText("0");
+        jchbY.setText("Y");
+
+        jbtnRefletir.setText("Refletir");
+        jbtnRefletir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnRefletirActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(139, 139, 139)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jchbX)
+                        .addGap(23, 23, 23)
+                        .addComponent(jchbY))
+                    .addComponent(jbtnRefletir))
+                .addContainerGap(160, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jchbX)
+                    .addComponent(jchbY))
+                .addGap(18, 18, 18)
+                .addComponent(jbtnRefletir)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Reflexao", jPanel3);
+
         jtxtYd1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jtxtYd1ActionPerformed(evt);
             }
         });
-
-        jtxtXd1.setText("0");
 
         jLabel8.setText("X: ");
 
@@ -267,7 +325,7 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jtxtYd1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(151, Short.MAX_VALUE))
+                .addContainerGap(137, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -280,12 +338,10 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jbtnTransladar)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Transladar", jPanel4);
-
-        jtxtGraus.setText("0");
 
         jLabel10.setText("Graus: ");
 
@@ -307,7 +363,7 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(jtxtGraus, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(jbtnRotaciona)
-                .addContainerGap(138, Short.MAX_VALUE))
+                .addContainerGap(124, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -317,14 +373,11 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jtxtGraus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
                     .addComponent(jbtnRotaciona))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Rotacionar", jPanel5);
 
-        jtxtXd.setText("1");
-
-        jtxtYd.setText("1");
         jtxtYd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jtxtYdActionPerformed(evt);
@@ -358,7 +411,7 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jtxtYd, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(147, Short.MAX_VALUE))
+                .addContainerGap(133, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -371,49 +424,92 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jbtnEscalonar)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Escalonar", jPanel2);
 
-        jchbX.setText("X");
+        jtxtxMin.setText("jTextField1");
 
-        jchbY.setText("Y");
-
-        jbtnRefletir.setText("Refletir");
-        jbtnRefletir.addActionListener(new java.awt.event.ActionListener() {
+        jtxtxMax.setText("jTextField1");
+        jtxtxMax.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbtnRefletirActionPerformed(evt);
+                jtxtxMaxActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(139, 139, 139)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jchbX)
-                        .addGap(23, 23, 23)
-                        .addComponent(jchbY))
-                    .addComponent(jbtnRefletir))
-                .addContainerGap(174, Short.MAX_VALUE))
+        jtxtyMax.setText("jTextField1");
+
+        jtxtyMin.setText("jTextField1");
+
+        jbtnAtualizaMundo.setText("jButton1");
+        jbtnAtualizaMundo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnAtualizaMundoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(90, 90, 90)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
+                        .addComponent(jtxtyMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jtxtyMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jtxtxMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jtxtxMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)))
+                .addComponent(jbtnAtualizaMundo)
+                .addContainerGap(35, Short.MAX_VALUE))
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jchbX)
-                    .addComponent(jchbY))
-                .addGap(18, 18, 18)
-                .addComponent(jbtnRefletir)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jtxtxMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jtxtxMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jtxtyMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jtxtyMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jbtnAtualizaMundo)))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Reflexao", jPanel3);
+        jTabbedPane1.addTab("Atualiza Mundo", jPanel6);
+
+        jrbLinhas.setSelected(true);
+        jrbLinhas.setText("Linhas");
+        jrbLinhas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbLinhasActionPerformed(evt);
+            }
+        });
+
+        jrbCircunferencia.setText("Circunferencia");
+        jrbCircunferencia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbCircunferenciaActionPerformed(evt);
+            }
+        });
+
+        jbtnClipping.setText("jButton1");
+        jbtnClipping.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnClippingActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -433,21 +529,28 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(jlbView)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jbtnNovoPoligono)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbtnDesenha)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jbtnNovoPoligono)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jrbLinhas)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jrbCircunferencia))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jcbModDesenho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGap(43, 43, 43)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jcbModDesenho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbtnClipping))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -464,28 +567,38 @@ public class Principal extends javax.swing.JFrame {
                             .addComponent(jlbMundo)
                             .addComponent(jlbView)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jbtnNovoPoligono)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jbtnNovoPoligono)
+                            .addComponent(jrbLinhas)
+                            .addComponent(jrbCircunferencia))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jcbModDesenho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(12, 12, 12)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel1)
+                                            .addComponent(jLabel2))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(27, 27, 27)
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(37, 37, 37)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jbtnDesenha)
+                        .addGap(18, 18, 18)
                         .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(46, 46, 46)
+                        .addComponent(jbtnClipping)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void canvasMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canvasMouseMoved
         // TODO add your handling code here:
         pAux.setX(evt.getX());
@@ -493,81 +606,96 @@ public class Principal extends javax.swing.JFrame {
         jlbMundo.setText("(" + (int) pAux.getX() + "," + (int) pAux.getY() + ")");
         jlbView.setText("(" + pAux.XwvP((int) pAux.getX(), viewPort, world) + "," + pAux.YwvP((int) pAux.getY(), viewPort, world) + ")");
     }//GEN-LAST:event_canvasMouseMoved
-    
+
     public void desenhaEixosFixo() {
         Graphics g = canvas.getGraphics();
         g.setColor(Color.red);
-        
+
         g.drawLine(pAux.XwvP(0, world, viewPort), pAux.YwvP(-250, world, viewPort), pAux.XwvP(0, world, viewPort), pAux.YwvP(250, world, viewPort));
         g.drawLine(pAux.XwvP(-250, world, viewPort), pAux.YwvP(0, world, viewPort), pAux.XwvP(250, world, viewPort), pAux.YwvP(0, world, viewPort));
+
+        g.drawLine(pAux.XwvP((int) clip.getMinX(), world, viewPort), pAux.YwvP((int) clip.getMinY(), world, viewPort), pAux.XwvP((int) clip.getMinX(), world, viewPort), pAux.YwvP((int) clip.getMaxY(), world, viewPort));
+        g.drawLine(pAux.XwvP((int) clip.getMinX(), world, viewPort), pAux.YwvP((int) clip.getMaxY(), world, viewPort), pAux.XwvP((int) clip.getMaxX(), world, viewPort), pAux.YwvP((int) clip.getMaxY(), world, viewPort));
+        g.drawLine(pAux.XwvP((int) clip.getMaxX(), world, viewPort), pAux.YwvP((int) clip.getMaxY(), world, viewPort), pAux.XwvP((int) clip.getMaxX(), world, viewPort), pAux.YwvP((int) clip.getMinY(), world, viewPort));
+        g.drawLine(pAux.XwvP((int) clip.getMaxX(), world, viewPort), pAux.YwvP((int) clip.getMinY(), world, viewPort), pAux.XwvP((int) clip.getMinX(), world, viewPort), pAux.YwvP((int) clip.getMinY(), world, viewPort));
     }
-    
-    public void reDesenha(){
+
+    public void reDesenha() {
         canvas.getGraphics().clearRect(0, 0, 500, 500);
         desenhaEixosFixo();
     }
-    
+
     public void desenhaCanvas() {
-        if(jcbModDesenho.getSelectedIndex() == 1){
+        if (jcbModDesenho.getSelectedIndex() == 1) {
             for (int i = 0; i < dsp.getPoligonos().size(); i++) {
                 dsp.getPoligonos().get(i).draw(canvas, viewPort, world);
             }
-        }else{
-            if(jcbModDesenho.getSelectedIndex() == 2){
+        } else {
+            if (jcbModDesenho.getSelectedIndex() == 2) {
                 for (int i = 0; i < dsp.getPoligonos().size(); i++) {
                     dsp.getPoligonos().get(i).drawDda(canvas, viewPort, world);
                 }
-            }else{
-                if(jcbModDesenho.getSelectedIndex() == 3){
+            } else {
+                if (jcbModDesenho.getSelectedIndex() == 3) {
                     for (int i = 0; i < dsp.getPoligonos().size(); i++) {
                         dsp.getPoligonos().get(i).drawBresenham(canvas, viewPort, world);
                     }
-                }else{
+                } else {
                     JOptionPane.showMessageDialog(null, "Escolha o Metodo de Desenho");
                 }
             }
         }
     }
-    
-    public void desenhaPoligono(){
+
+    public void desenhaPoligono() {
         int i = jlsPoligonos.getSelectedIndex();
-        
-        if(jcbModDesenho.getSelectedIndex() == 1){
-                dsp.getPoligonos().get(i).draw(canvas, viewPort, world);
-        }else{
-            if(jcbModDesenho.getSelectedIndex() == 2){
-                    dsp.getPoligonos().get(i).drawDda(canvas, viewPort, world);
-            }else{
-                if(jcbModDesenho.getSelectedIndex() == 3){
-                        dsp.getPoligonos().get(i).drawBresenham(canvas, viewPort, world);
-                }else{
+        Poligono p = dsp.getPoligonos().get(i);
+
+        if (jcbModDesenho.getSelectedIndex() == 1) {
+            p.draw(canvas, viewPort, world);
+        } else {
+            if (jcbModDesenho.getSelectedIndex() == 2) {
+                p.drawDda(canvas, viewPort, world);
+            } else {
+                if (jcbModDesenho.getSelectedIndex() == 3) {
+                    p.drawBresenham(canvas, viewPort, world);
+                } else {
                     JOptionPane.showMessageDialog(null, "Escolha o Metodo de Desenho");
                 }
             }
         }
     }
-    
+
     private void jbtnNovoPoligonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNovoPoligonoActionPerformed
         // TODO add your handling code here:     
-        if(AddPoligono == 0){
+        if (AddPoligono == 0) {
             jbtnNovoPoligono.setText("Termina Poligono");
             AddPoligono = 1;
-            
+
             desenhaEixosFixo();//POG
-            
-        }else{
+
+        } else {
             //Adiciona ao DisplayFile e Depois desenha colocando o AdcionaPol = 0;
-            if(0 == polAux.getPontos().size()){
+            if (0 == polAux.getPontos().size()) {
                 JOptionPane.showMessageDialog(null, "Clique no Painel para adicionar os pontos ao poligono");
-            }else{
+            } else {
+                if (polAux.tipo == 2) {
+                    polAux = polAux.drawCirculo(polAux.getPontos().get(0), polAux.getPontos().get(1));
+                }
+                
                 dsp.poligonos.add(polAux);
                 polAux = null;
-                
+
                 jbtnNovoPoligono.setText("Novo Poligono");
                 AddPoligono = 0;
-                
+
                 listaPoligono.addElement(dsp.poligonos.size());
-                jlsPoligonos.setModel(listaPoligono);   
+                try {
+                    jlsPoligonos.setModel(listaPoligono);
+                } catch (Exception e) {
+                }
+                
+                desenhaCanvas();
             }
         }
     }//GEN-LAST:event_jbtnNovoPoligonoActionPerformed
@@ -575,13 +703,18 @@ public class Principal extends javax.swing.JFrame {
     private void canvasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canvasMouseClicked
         // TODO add your handling code here:
         Ponto pAux2 = new Ponto();
-        
-        if(AddPoligono == 0){
+
+        if (AddPoligono == 0) {
             JOptionPane.showMessageDialog(null, "Clique em Novo poligono primeiro");
-        }else{
-            if(polAux == null)
-                polAux = new Poligono();
-            
+        } else {
+            if (polAux == null) {
+                if (jrbCircunferencia.isSelected()) {
+                    polAux = new Poligono(2);
+                } else {
+                    polAux = new Poligono();
+                }
+            }
+
             pAux2.setX(pAux.XwvP(evt.getX(), viewPort, world));
             pAux2.setY(pAux.YwvP(evt.getY(), viewPort, world));
             polAux.pontos.add(pAux2);
@@ -594,51 +727,51 @@ public class Principal extends javax.swing.JFrame {
 
     private void jlsPoligonosValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jlsPoligonosValueChanged
         // TODO add your handling code here:
-        int index = jlsPoligonos.getSelectedIndex();
         listaPontos.clear();
-        jlsPontos.setModel(listaPontos);
-        
-        dsp.poligonos.get(index).pontos.forEach((p) -> {
+
+        dsp.poligonos.get(jlsPoligonos.getSelectedIndex()).pontos.forEach((p) -> {
             listaPontos.addElement(p);
         });
-        
+
         jlsPontos.setModel(listaPontos);
-        
-        //Desenha poligono
-        reDesenha();
-        desenhaPoligono();
     }//GEN-LAST:event_jlsPoligonosValueChanged
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
     }//GEN-LAST:event_formWindowOpened
 
+    private void jbtnDesenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDesenhaActionPerformed
+        // TODO add your handling code here:
+        reDesenha();
+        desenhaPoligono();
+    }//GEN-LAST:event_jbtnDesenhaActionPerformed
+
     private void jbtnParaCimaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnParaCimaActionPerformed
         // TODO add your handling code here:
-        
+
         world.setMaxY(world.getMaxY() + 5);
         world.setMinY(world.getMinY() + 5);
-        
+
         reDesenha();
         canvas.update(this.getGraphics());
     }//GEN-LAST:event_jbtnParaCimaActionPerformed
 
     private void jbtnParaDireitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnParaDireitaActionPerformed
         // TODO add your handling code here:
-        
+
         world.setMaxX(world.getMaxX() + 5);
         world.setMinX(world.getMinX() + 5);
-        
+
         reDesenha();
         canvas.update(this.getGraphics());
     }//GEN-LAST:event_jbtnParaDireitaActionPerformed
 
     private void jbtnParaEsquerdaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnParaEsquerdaActionPerformed
         // TODO add your handling code here:
-        
+
         world.setMaxX(world.getMaxX() - 5);
         world.setMinX(world.getMinX() - 5);
-        
+
         reDesenha();
         canvas.update(this.getGraphics());
     }//GEN-LAST:event_jbtnParaEsquerdaActionPerformed
@@ -647,22 +780,22 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
         world.setMaxY(world.getMaxY() - 5);
         world.setMinY(world.getMinY() - 5);
-        
+
         reDesenha();
         canvas.update(this.getGraphics());
-        
+
     }//GEN-LAST:event_jbtnParaBaixoActionPerformed
 
     private void jbtnParaOrigemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnParaOrigemActionPerformed
         // TODO add your handling code here:
-        
+
         world.setMaxY(250);
         world.setMinY(-250);
         world.setMaxX(250);
         world.setMinX(-250);
         reDesenha();
         canvas.update(this.getGraphics());
-        
+
     }//GEN-LAST:event_jbtnParaOrigemActionPerformed
 
     private void jbtnEscalonarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEscalonarActionPerformed
@@ -681,12 +814,12 @@ public class Principal extends javax.swing.JFrame {
 
     private void jbtnRefletirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnRefletirActionPerformed
         // TODO add your handling code here:
-        if(jchbX.isSelected() && jchbY.isSelected()){
+        if (jchbX.isSelected() && jchbY.isSelected()) {
             dsp.getPoligonos().get(jlsPoligonos.getSelectedIndex()).reflexao(2);
-        }else{
-            if(jchbX.isSelected()){
+        } else {
+            if (jchbX.isSelected()) {
                 dsp.getPoligonos().get(jlsPoligonos.getSelectedIndex()).reflexao(1);
-            }else{
+            } else {
                 dsp.getPoligonos().get(jlsPoligonos.getSelectedIndex()).reflexao(0);
             }
         }
@@ -711,12 +844,67 @@ public class Principal extends javax.swing.JFrame {
     private void jbtnRotacionaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnRotacionaActionPerformed
         // TODO add your handling code here:
         int graus = Integer.parseInt(jtxtGraus.getText());
-        System.out.println(dsp.getPoligonos().get(jlsPoligonos.getSelectedIndex()).pontoMedio());
         dsp.getPoligonos().get(jlsPoligonos.getSelectedIndex()).rotacionar(graus);
         reDesenha();
         desenhaPoligono();
-        
+
     }//GEN-LAST:event_jbtnRotacionaActionPerformed
+
+    private void jtxtxMaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtxtxMaxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtxtxMaxActionPerformed
+
+    private void jbtnAtualizaMundoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnAtualizaMundoActionPerformed
+        // TODO add your handling code here:
+        world.setMaxY(Integer.parseInt(jtxtyMax.getText()));
+        world.setMinY(Integer.parseInt(jtxtyMin.getText()));
+        world.setMaxX(Integer.parseInt(jtxtxMax.getText()));
+        world.setMinX(Integer.parseInt(jtxtxMin.getText()));
+        reDesenha();
+        canvas.update(this.getGraphics());
+
+    }//GEN-LAST:event_jbtnAtualizaMundoActionPerformed
+
+    private void jrbLinhasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbLinhasActionPerformed
+        // TODO add your handling code here:
+        jrbCircunferencia.setSelected(false);
+        polAux.tipo = 1;
+    }//GEN-LAST:event_jrbLinhasActionPerformed
+
+    private void jrbCircunferenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbCircunferenciaActionPerformed
+        // TODO add your handling code here:
+        jrbLinhas.setSelected(false);
+        polAux.tipo = 2;
+        JOptionPane.showMessageDialog(null, "Selecione dois pontos");
+    }//GEN-LAST:event_jrbCircunferenciaActionPerformed
+
+    private void jbtnClippingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnClippingActionPerformed
+        // TODO add your handling code here:
+        int i=0,j=0;
+        
+        for(i = 0; i< dsp.getPoligonos().size(); i++){
+            if(dsp.getPoligonos().get(i).tipo == 4){
+                j++;
+            }
+        }
+        
+        j*=2;
+        i = dsp.getPoligonos().size();
+        
+        for(j=j; j<i;j++){
+            Poligono aux = new Poligono();
+            aux.pontos = dsp.getPoligonos().get(j).pontos;
+            aux.clip(clip.getMinX(), clip.getMinY(), clip.getMaxX(), clip.getMaxY());
+            dsp.poligonos.add(aux);
+            listaPoligono.addElement(dsp.getPoligonos().size() + "(CLIP)");
+        }
+        reDesenha();
+        desenhaCanvas();
+    }//GEN-LAST:event_jbtnClippingActionPerformed
+
+    private void jlsPoligonosComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_jlsPoligonosComponentAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jlsPoligonosComponentAdded
 
     /**
      * @param args the command line arguments
@@ -770,9 +958,13 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JButton jbtnAtualizaMundo;
+    private javax.swing.JButton jbtnClipping;
+    private javax.swing.JButton jbtnDesenha;
     private javax.swing.JButton jbtnEscalonar;
     private javax.swing.JButton jbtnNovoPoligono;
     private javax.swing.JButton jbtnParaBaixo;
@@ -790,10 +982,16 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jlbView;
     private javax.swing.JList<String> jlsPoligonos;
     private javax.swing.JList<String> jlsPontos;
+    private javax.swing.JRadioButton jrbCircunferencia;
+    private javax.swing.JRadioButton jrbLinhas;
     private javax.swing.JTextField jtxtGraus;
     private javax.swing.JTextField jtxtXd;
     private javax.swing.JTextField jtxtXd1;
     private javax.swing.JTextField jtxtYd;
     private javax.swing.JTextField jtxtYd1;
+    private javax.swing.JTextField jtxtxMax;
+    private javax.swing.JTextField jtxtxMin;
+    private javax.swing.JTextField jtxtyMax;
+    private javax.swing.JTextField jtxtyMin;
     // End of variables declaration//GEN-END:variables
 }
