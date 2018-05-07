@@ -10,7 +10,7 @@ package Objetos;
  * @author onascimento
  */
 public class Ponto3D extends Ponto{
-    public int z;
+    public double z;
 
     public Ponto3D() {
         super.setX(0);
@@ -18,7 +18,11 @@ public class Ponto3D extends Ponto{
         z = 0;
     }
 
-    public void setZ(int z) {
+    public void setZ(double z) {
         this.z = z;
+    }
+
+    public double getZ() {
+        return z;
     }
 }

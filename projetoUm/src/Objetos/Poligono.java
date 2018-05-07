@@ -10,8 +10,6 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -20,6 +18,7 @@ import java.util.logging.Logger;
 public class Poligono {
 
     public ArrayList<Ponto> pontos;
+    public ArrayList<Ponto3D> pontos3D;
     public int tipo;
 
     /*
@@ -33,22 +32,26 @@ public class Poligono {
     }
 
     private Poligono(ArrayList<Ponto> ponto) {
-        this.setPontos(ponto);
+        setPontos(ponto);
     }
-
+    
+    public Poligono(Ponto3D ponto3D){}
+    
     public Poligono() {
-        pontos = new ArrayList<Ponto>();
+        pontos = new ArrayList<>();
         tipo = 1;
     }
 
     public Poligono(int tipo) {
-        pontos = new ArrayList<Ponto>();
+        pontos = new ArrayList<>();
         this.tipo = tipo;
     }
 
     public ArrayList<Ponto> getPontos() {
         return pontos;
     }
+    
+    
 
     public void draw(Canvas c, Janela vP, Janela mundo) {
         //System.out.println("Tamanho vetor ponto: "+this.getPontos().size());
@@ -515,10 +518,6 @@ public class Poligono {
         float p4X = (float) this.getPontos().get(3).getX();
         float p4Y = (float) this.getPontos().get(3).getY();
 
-//        float r1X = (float) (3*(this.getPontos().get(1).getX() - p1X));
-//        float r1Y = (float) (3*(this.getPontos().get(1).getY() - p1Y));
-//        float r4X = (float) (3*(p4X - this.getPontos().get(2).getX()));
-//        float r4Y = (float) (3*(p4Y - this.getPontos().get(2).getY()));
         for (float m = 0; m < 1; m = (float) (m + 0.01)) {
             float x;
             float y;
@@ -556,5 +555,67 @@ public class Poligono {
         }
 
         return auxPol;
+    }
+
+    public double[][] matrizTranslacao(double dX, double dY, double dZ) {
+        double trans[][] = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {dX, dY, dZ, 1}};
+        return trans;
+    }
+
+    public double[][] matrizEscalonamento(double sX, double sY, double sZ) {
+        double escal[][] = {{sX, 0, 0, 0}, {0, sY, 0, 0}, {0, 0, sZ, 0}, {0, 0, 0, 1}};
+        return escal;
+    }
+
+    public double[][] matrizRotacaox(double g) {
+        return null;
+    }
+
+    public double[][] calculoHomogenia(double dX, double dY, double dZ, double sX, double sY, double sZ, double g) {
+        double auxMatriz[][] = null;
+        //escalonamento
+        if (auxMatriz == null) {
+            auxMatriz = matrizEscalonamento(sX, sY, sZ);
+        }
+        //translação
+        auxMatriz = multiplicaMatriz(auxMatriz, matrizTranslacao(dX, dY, dZ));
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                System.out.println(auxMatriz[i][j]);
+            }
+        }
+        return auxMatriz;
+    }
+
+    public void calculoH(double[][] matrizPrincipal) {
+        Ponto3D aux;
+        for (int i = 0; i < this.pontos.size(); i++) {
+            aux = (Ponto3D) this.pontos.get(i);
+            System.out.println(aux);
+            double matrizPonto[][] = {{aux.getX(), aux.getY(), aux.getZ()}};
+            double matrizAuxiliar[][] = multiplicaMatriz(matrizPonto, matrizPrincipal);
+            aux.setX(matrizAuxiliar[0][0]);
+            aux.setY(matrizAuxiliar[0][1]);
+            aux.setZ(matrizAuxiliar[0][2]);
+            this.pontos.get(i).setX(aux.getX());
+            this.pontos.get(i).setY(aux.getY());
+            //this.pontos3d.get(i).setZ(aux.getZ());
+        }
+    }
+
+    public double[][] multiplicaMatriz(double matrizA[][], double matrizB[][]) {
+        double c[][] = new double[4][4];
+
+        for (int i = 0; i < matrizA.length; i++) { //Linha
+            double aux = 0;
+            for (int j = 0; j < matrizB[i].length; j++) { //Coluna 
+                int ax = 0, ay = 0;
+                for (int x = 0; x < matrizA[0].length; x++) {
+                    aux = aux + (matrizA[i][x] * matrizB[x][j]);
+                }
+                c[i][j] = aux;
+            }
+        }
+        return c;
     }
 }

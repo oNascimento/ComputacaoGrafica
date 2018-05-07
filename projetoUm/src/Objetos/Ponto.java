@@ -90,7 +90,6 @@ public class Ponto {
         double xG, yG;
         xG = getX()*(Math.cos(g)) - getY()*(Math.sin(g));
         yG = getX()*(Math.sin(g)) + getY()*(Math.cos(g));
-        System.out.println("X: "+ xG+", Y: "+yG);
         setX(xG);
         setY(yG);
     }
