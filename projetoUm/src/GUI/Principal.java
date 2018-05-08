@@ -147,6 +147,7 @@ public class Principal extends javax.swing.JFrame {
         jbtnTransladar1 = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
+        jbtnDesenhaCanvas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -210,7 +211,7 @@ public class Principal extends javax.swing.JFrame {
         jcbModDesenho.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Metodo de Desenho", "Default", "DDA", "Bresenham" }));
         jcbModDesenho.setSelectedIndex(1);
 
-        jbtnDesenha.setText("Desenha Poligono");
+        jbtnDesenha.setText("Limpar Canvas");
         jbtnDesenha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnDesenhaActionPerformed(evt);
@@ -790,6 +791,13 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jbtnDesenhaCanvas.setText("Desenha Todos Poligonos");
+        jbtnDesenhaCanvas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnDesenhaCanvasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -837,7 +845,10 @@ public class Principal extends javax.swing.JFrame {
                                     .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(jcbModDesenho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jbtnDesenha))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jbtnDesenhaCanvas)
+                                .addGap(18, 18, 18)
+                                .addComponent(jbtnDesenha)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -868,9 +879,11 @@ public class Principal extends javax.swing.JFrame {
                                     .addGap(27, 27, 27)
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbtnDesenha)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jbtnDesenhaCanvas)
+                            .addComponent(jbtnDesenha))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -921,11 +934,11 @@ public class Principal extends javax.swing.JFrame {
     }
 
     public void AtualizaMundo(Janela mundo) {
-        axisY.pontos.set(0, new Ponto((mundo.getMaxX() + mundo.getMinX()) / 2, mundo.getMaxY()));
-        axisY.pontos.set(1, new Ponto((mundo.getMaxX() + mundo.getMinX()) / 2, mundo.getMinY()));
-
-        axisX.pontos.set(0, new Ponto(mundo.getMaxX(), (mundo.getMaxX() + mundo.getMinX()) / 2));
-        axisX.pontos.set(1, new Ponto(mundo.getMinX(), (mundo.getMaxX() + mundo.getMinX()) / 2));
+        axisY.pontos.get(0).setY(mundo.getMaxY());
+        axisY.pontos.get(1).setY(mundo.getMinY());
+        
+        axisX.pontos.get(0).setX(mundo.getMaxX());
+        axisX.pontos.get(1).setX(mundo.getMinX());
     }
 
     public void desenhaCanvas() {
@@ -1049,6 +1062,8 @@ public class Principal extends javax.swing.JFrame {
         });
 
         jlsPontos.setModel(listaPontos);
+        reDesenha();
+        desenhaPoligono();
     }//GEN-LAST:event_jlsPoligonosValueChanged
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -1059,7 +1074,6 @@ public class Principal extends javax.swing.JFrame {
     private void jbtnDesenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDesenhaActionPerformed
         // TODO add your handling code here:
         reDesenha();
-        desenhaPoligono();
     }//GEN-LAST:event_jbtnDesenhaActionPerformed
 
     private void jbtnParaCimaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnParaCimaActionPerformed
@@ -1200,8 +1214,17 @@ public class Principal extends javax.swing.JFrame {
 
     private void jbtnClippingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnClippingActionPerformed
         // TODO add your handling code here:
-        int i = 0, j = 0;
-
+        int i, j=0;
+        try{
+            int xMax,xMin,yMax,yMin;
+            xMax = Integer.parseInt(jtxtxMax1.getText());
+            xMin = Integer.parseInt(jtxtxMin1.getText());
+            yMax = Integer.parseInt(jtxtyMax1.getText());
+            yMin = Integer.parseInt(jtxtyMin1.getText());
+            
+            clip = new Janela(xMin,yMin,xMax,yMax);
+        }catch(Exception e){}
+        
         for (i = 0; i < dsp.getPoligonos().size(); i++) {
             if (dsp.getPoligonos().get(i).tipo == 4) {
                 j++;
@@ -1215,8 +1238,10 @@ public class Principal extends javax.swing.JFrame {
             Poligono aux = new Poligono();
             aux.pontos = dsp.getPoligonos().get(j).pontos;
             aux.clip(clip.getMinX(), clip.getMinY(), clip.getMaxX(), clip.getMaxY());
-            dsp.poligonos.add(aux);
-            listaPoligono.addElement(dsp.getPoligonos().size() + "(CLIP)");
+            if(!aux.pontos.isEmpty()){
+                dsp.poligonos.add(aux);
+                listaPoligono.addElement(dsp.getPoligonos().size() + "(CLIP)");
+            }
         }
         reDesenha();
         desenhaCanvas();
@@ -1272,6 +1297,12 @@ public class Principal extends javax.swing.JFrame {
         f = chooser.getSelectedFile();
 
     }//GEN-LAST:event_jbtnReadFileActionPerformed
+
+    private void jbtnDesenhaCanvasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDesenhaCanvasActionPerformed
+        // TODO add your handling code here:
+        reDesenha();
+        desenhaCanvas();
+    }//GEN-LAST:event_jbtnDesenhaCanvasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1342,6 +1373,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton jbtnAtualizaMundo;
     private javax.swing.JButton jbtnClipping;
     private javax.swing.JButton jbtnDesenha;
+    private javax.swing.JButton jbtnDesenhaCanvas;
     private javax.swing.JButton jbtnEscalonar;
     private javax.swing.JButton jbtnEscalonar1;
     private javax.swing.JButton jbtnNovoPoligono;

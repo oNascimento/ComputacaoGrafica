@@ -35,7 +35,9 @@ public class Poligono {
         setPontos(ponto);
     }
     
-    public Poligono(Ponto3D ponto3D){}
+    public Poligono(Ponto3D ponto3D){
+        pontos3D = new ArrayList<>();
+    }
     
     public Poligono() {
         pontos = new ArrayList<>();
@@ -609,7 +611,6 @@ public class Poligono {
         for (int i = 0; i < matrizA.length; i++) { //Linha
             double aux = 0;
             for (int j = 0; j < matrizB[i].length; j++) { //Coluna 
-                int ax = 0, ay = 0;
                 for (int x = 0; x < matrizA[0].length; x++) {
                     aux = aux + (matrizA[i][x] * matrizB[x][j]);
                 }
