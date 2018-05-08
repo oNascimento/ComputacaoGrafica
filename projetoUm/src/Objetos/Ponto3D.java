@@ -18,6 +18,15 @@ public class Ponto3D extends Ponto{
         z = 0;
     }
 
+    public Ponto3D(double z) {
+        this.z = z;
+    }
+
+    public Ponto3D(Ponto p, double z) {
+        super(p.getX(), p.getY());
+        this.z = z;
+    }
+
     public void setZ(double z) {
         this.z = z;
     }

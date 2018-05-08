@@ -24,7 +24,7 @@ public class Display{
     }
     
     public Display(){
-        poligonos = new ArrayList<Poligono>();
+        poligonos = new ArrayList<>();
     }
 
     public ArrayList<Poligono> getPoligonos() {

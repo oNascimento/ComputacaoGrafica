@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class Poligono {
 
     public ArrayList<Ponto> pontos;
-    public ArrayList<Ponto3D> pontos3D;
+    ArrayList<Ponto3D> pontos3D;
     public int tipo;
 
     /*
@@ -35,13 +35,17 @@ public class Poligono {
         setPontos(ponto);
     }
     
-    public Poligono(Ponto3D ponto3D){
-        pontos3D = new ArrayList<>();
-    }
-    
     public Poligono() {
         pontos = new ArrayList<>();
         tipo = 1;
+    }
+    
+    public Poligono(Ponto p,int z){
+        pontos3D = new ArrayList<>();
+    }
+
+    public ArrayList<Ponto3D> getPontos3D() {
+        return pontos3D;
     }
 
     public Poligono(int tipo) {
@@ -52,8 +56,6 @@ public class Poligono {
     public ArrayList<Ponto> getPontos() {
         return pontos;
     }
-    
-    
 
     public void draw(Canvas c, Janela vP, Janela mundo) {
         //System.out.println("Tamanho vetor ponto: "+this.getPontos().size());
@@ -119,7 +121,6 @@ public class Poligono {
     }
 
     public void rotacionar(double g) {
-        //g = (g/180)*Math.PI;
         double i = this.pontos.size();
         double xP = 0, yP = 0;
         for (int j = 0; j < i; j++) {
@@ -139,6 +140,12 @@ public class Poligono {
         for (int j = 0; j < i; j++) {
             this.pontos.get(j).setX(this.pontos.get(j).getX() + xP);
             this.pontos.get(j).setY(this.pontos.get(j).getY() + yP);
+        }
+    }
+    
+    public void rotacionar(Poligono p, int graus){
+        for(Ponto ponto: p.pontos){
+            ponto.rotacao(graus);
         }
     }
 
@@ -211,13 +218,11 @@ public class Poligono {
                         for (int k = 1; k < Math.abs(dx); k++) {
                             if (erro < 0) {
                                 aux.setX(aux.getX() + 1);
-                                //System.out.print(aux);
                                 g.drawLine(aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo), aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo));
                                 erro = erro + dy;
                             } else {
                                 aux.setX(aux.getX() + 1);
                                 aux.setY(aux.getY() + 1);
-                                //System.out.print(aux);
                                 g.drawLine(aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo), aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo));
                                 erro = erro + (dy - dx);
                             }
@@ -227,12 +232,10 @@ public class Poligono {
                             if (erro < 0) {
                                 aux.setX(aux.getX() + 1);
                                 aux.setY(aux.getY() + 1);
-                                //System.out.print(aux);
                                 g.drawLine(aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo), aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo));
                                 erro = erro + (dy - dx);
                             } else {
                                 aux.setY(aux.getY() + 1);
-                                //System.out.print(aux);
                                 g.drawLine(aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo), aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo));
                                 erro = erro - dx;
                             }
@@ -243,13 +246,11 @@ public class Poligono {
                         for (int k = 1; k < Math.abs(dx); k++) {
                             if (erro < 0) {
                                 aux.setX(aux.getX() - 1);
-                                //System.out.print(aux);
                                 g.drawLine(aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo), aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo));
                                 erro = erro + dy;
                             } else {
                                 aux.setX(aux.getX() - 1);
                                 aux.setY(aux.getY() + 1);
-                                //System.out.print(aux);
                                 g.drawLine(aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo), aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo));
                                 erro = erro + (dy + dx);
                             }
@@ -259,12 +260,10 @@ public class Poligono {
                             if (erro < 0) {
                                 aux.setX(aux.getX() - 1);
                                 aux.setY(aux.getY() + 1);
-                                //System.out.print(aux);
                                 g.drawLine(aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo), aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo));
                                 erro = erro + (dy + dx);
                             } else {
                                 aux.setY(aux.getY() + 1);
-                                //System.out.print(aux);
                                 g.drawLine(aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo), aux.XvpM((int) aux.getX(), vP, mundo), aux.YvpM((int) aux.getY(), vP, mundo));
                                 erro = erro + dx;
                             }
@@ -276,7 +275,6 @@ public class Poligono {
     }
 
     public Ponto pontosCirculo(int x, int y) {
-//        /Graphics g = c.getGraphics();
         x = (int) (x + this.getPontos().get(0).getX());
         y = (int) (y + this.getPontos().get(0).getY());
         Ponto auxP = new Ponto(x, y);
@@ -285,16 +283,14 @@ public class Poligono {
     }
 
     public Poligono drawCirculo(Ponto p1, Ponto p2) {
-        //Graphics g = c.getGraphics();
+
         Poligono auxPol = new Poligono();
         Ponto auxM[][] = new Ponto[8][CalculaRaio(p1, p2)];
         ArrayList<ArrayList<Ponto>> lista = new ArrayList<>();
         int x, y, p, r, i = 0;
         r = CalculaRaio(p1, p2);
         x = 0;
-        //y = Integer.parseInt(JOptionPane.showInputDialog("Informe o raio", r));
         y = r;
-        //this.pontosCirculo(x, y, c, viewPort, mundo);
         p = 1 - r;
         while (x < y) {
             if (p < 0) {
@@ -325,8 +321,6 @@ public class Poligono {
             }
         }
 
-        //auxPol.setTypeF(0);
-        //auxPol.draw(c, viewPort, mundo);
         return auxPol;
     }
 
@@ -336,15 +330,13 @@ public class Poligono {
     }
 
     public void clip(float xmin, float ymin, float xmax, float ymax) {
-// Sutherland-Hodgman polygon clipping:
         Poligono poly1 = new Poligono();
         int n;
         Ponto a, b;
         boolean aIns, bIns;
 
         tipo = 4;
-// Tells whether A or B is on the same side as the rectangle
-// Clip against x == xmax:
+
         if ((n = pontos.size()) == 0) {
             return;
         }
@@ -364,7 +356,7 @@ public class Poligono {
         }
         pontos = poly1.pontos;
         poly1 = new Poligono();
-// Clip against x == xmin:
+
         if ((n = pontos.size()) == 0) {
             return;
         }
@@ -385,7 +377,7 @@ public class Poligono {
         }
         pontos = poly1.pontos;
         poly1 = new Poligono();
-// Clip against y == ymax:
+
         if ((n = pontos.size()) == 0) {
             return;
         }
@@ -405,7 +397,7 @@ public class Poligono {
         }
         pontos = poly1.pontos;
         poly1 = new Poligono();
-// Clip against y == ymin:
+
         if ((n = pontos.size()) == 0) {
             return;
         }
@@ -435,43 +427,26 @@ public class Poligono {
         Ponto b = this.getPontos().get(1);
         Ponto c = this.getPontos().get(2);
         pontos.clear();
-        Ponto meioAB, meioBC;
-        meioAB = meioReta(a, b);
-        meioBC = meioReta(b, c);
-        pontos.add(ladoEsquerdo(a, meioAB, meioReta(meioAB, meioBC)));
-        ladoDireito(meioReta(meioAB, meioBC), meioBC, c);
+        CurvaCasteljau(a, b, c);
     }
 
     private Ponto meioReta(Ponto a, Ponto b) {
         return new Ponto((a.getX() + b.getX()) / 2, (a.getY() + b.getY()) / 2);
     }
 
-    private Ponto ladoEsquerdo(Ponto a, Ponto b, Ponto c) {
+    private Ponto CurvaCasteljau(Ponto a, Ponto b, Ponto c) {
         Ponto meioAB, meioBC;
         meioAB = meioReta(a, b);
         meioBC = meioReta(b, c);
-        if ((c.getX() == a.getX()) && (c.getY() == a.getY())) {
+        if (CalculaRaio(a, c) < 0.005) {
             pontos.add(c);
             return c;
         } else {
-            ladoEsquerdo(a, meioAB, meioReta(meioAB, meioBC));
+            CurvaCasteljau(a, meioAB, meioReta(meioAB, meioBC));
+            CurvaCasteljau(meioReta(meioAB, meioBC), meioBC, c);
         }
         pontos.add(c);
         return c;
-    }
-
-    private Ponto ladoDireito(Ponto a, Ponto b, Ponto c) {
-        pontos.add(a);
-        Ponto meioAB, meioBC;
-        meioAB = meioReta(a, b);
-        meioBC = meioReta(b, c);
-        if ((c.getX() == a.getX()) && (c.getY() == a.getY())) {
-            pontos.add(a);
-            return a;
-        } else {
-            ladoDireito(meioReta(meioAB, meioBC), meioBC, c);
-        }
-        return a;
     }
 
     public float calculaPT(float p1, float p4, float r1, float r4, float m) {

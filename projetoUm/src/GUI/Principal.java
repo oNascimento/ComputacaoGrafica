@@ -9,7 +9,13 @@ import Objetos.*;
 import Componentes.*;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -108,6 +114,7 @@ public class Principal extends javax.swing.JFrame {
         jtxtGraus = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jbtnRotaciona = new javax.swing.JButton();
+        jrbHomogenia = new javax.swing.JRadioButton();
         jPanel2 = new javax.swing.JPanel();
         jtxtXd = new javax.swing.JTextField();
         jtxtYd = new javax.swing.JTextField();
@@ -126,7 +133,7 @@ public class Principal extends javax.swing.JFrame {
         jtxtxMin1 = new javax.swing.JTextField();
         jPanel7 = new javax.swing.JPanel();
         jbtnReadFile = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        jtxtCaminho = new javax.swing.JTextField();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel10 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
@@ -430,27 +437,34 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        jrbHomogenia.setText("Homogenia");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(54, 54, 54)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jbtnRotaciona)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(62, 62, 62)
+                        .addComponent(jbtnRotaciona))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
                         .addComponent(jLabel10)
                         .addGap(2, 2, 2)
-                        .addComponent(jtxtGraus, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(77, Short.MAX_VALUE))
+                        .addComponent(jtxtGraus, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jrbHomogenia)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(7, 7, 7)
+                .addGap(5, 5, 5)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jtxtGraus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10))
+                    .addComponent(jLabel10)
+                    .addComponent(jrbHomogenia))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jbtnRotaciona)
                 .addContainerGap(14, Short.MAX_VALUE))
@@ -606,7 +620,7 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        jTextField1.setText("Caminho | *.txt");
+        jtxtCaminho.setText("Caminho | *.txt");
 
         jLabel15.setText("Graus: ");
 
@@ -775,7 +789,7 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jTabbedPane2)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jTextField1)
+                        .addComponent(jtxtCaminho)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jbtnReadFile)))
                 .addContainerGap())
@@ -785,7 +799,7 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbtnReadFile)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jtxtCaminho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1084,6 +1098,7 @@ public class Principal extends javax.swing.JFrame {
 
         reDesenha();
         canvas.update(this.getGraphics());
+        desenhaCanvas();
     }//GEN-LAST:event_jbtnParaCimaActionPerformed
 
     private void jbtnParaDireitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnParaDireitaActionPerformed
@@ -1094,6 +1109,7 @@ public class Principal extends javax.swing.JFrame {
 
         reDesenha();
         canvas.update(this.getGraphics());
+        desenhaCanvas();
     }//GEN-LAST:event_jbtnParaDireitaActionPerformed
 
     private void jbtnParaEsquerdaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnParaEsquerdaActionPerformed
@@ -1104,6 +1120,7 @@ public class Principal extends javax.swing.JFrame {
 
         reDesenha();
         canvas.update(this.getGraphics());
+        desenhaCanvas();
     }//GEN-LAST:event_jbtnParaEsquerdaActionPerformed
 
     private void jbtnParaBaixoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnParaBaixoActionPerformed
@@ -1113,6 +1130,7 @@ public class Principal extends javax.swing.JFrame {
 
         reDesenha();
         canvas.update(this.getGraphics());
+        desenhaCanvas();
 
     }//GEN-LAST:event_jbtnParaBaixoActionPerformed
 
@@ -1125,13 +1143,14 @@ public class Principal extends javax.swing.JFrame {
         world.setMinX(-250);
         reDesenha();
         canvas.update(this.getGraphics());
+        desenhaCanvas();
 
     }//GEN-LAST:event_jbtnParaOrigemActionPerformed
 
     private void jbtnEscalonarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEscalonarActionPerformed
         // TODO add your handling code here:
-        int xD = Integer.parseInt(jtxtXd.getText());
-        int yD = Integer.parseInt(jtxtYd.getText());
+        Float xD = Float.parseFloat(jtxtXd.getText());
+        Float yD = Float.parseFloat(jtxtYd.getText());
 
         dsp.getPoligonos().get(jlsPoligonos.getSelectedIndex()).escalonar(xD, yD);
         reDesenha();
@@ -1174,7 +1193,12 @@ public class Principal extends javax.swing.JFrame {
     private void jbtnRotacionaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnRotacionaActionPerformed
         // TODO add your handling code here:
         int graus = Integer.parseInt(jtxtGraus.getText());
-        dsp.getPoligonos().get(jlsPoligonos.getSelectedIndex()).rotacionar(graus);
+        Poligono p = dsp.getPoligonos().get(jlsPoligonos.getSelectedIndex());
+        if(jrbHomogenia.isSelected()){
+            p.rotacionar(graus);
+        }else{
+            p.rotacionar(p, graus);
+        }
         reDesenha();
         desenhaPoligono();
 
@@ -1192,7 +1216,8 @@ public class Principal extends javax.swing.JFrame {
         world.setMinX(Integer.parseInt(jtxtxMin.getText()));
         reDesenha();
         canvas.update(this.getGraphics());
-
+        desenhaCanvas();
+        
     }//GEN-LAST:event_jbtnAtualizaMundoActionPerformed
 
     private void jrbLinhasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrbLinhasActionPerformed
@@ -1291,13 +1316,62 @@ public class Principal extends javax.swing.JFrame {
     private void jbtnReadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnReadFileActionPerformed
         // TODO add your handling code here:
         JFileChooser chooser = new JFileChooser();
+        Scanner sc;
         File f;
-
+        int x,y,z;
+        String aux;
+        
         chooser.showOpenDialog(Principal.this);
         f = chooser.getSelectedFile();
 
-    }//GEN-LAST:event_jbtnReadFileActionPerformed
+        jtxtCaminho.setText(f.getPath());
+        FileReader arq;
+        try {
+            arq = new FileReader(f.getPath());
+            BufferedReader lerArq = new BufferedReader(arq);
 
+            String linha = lerArq.readLine();
+            Poligono pol3D = new Poligono(new Ponto(),0);
+            
+            while (linha != null) {
+                sc = new Scanner(linha);
+                int i=0;
+                int valoresXYZ[] = null;
+                while(sc.hasNext()){
+                    aux = sc.next();
+                    if(tryConversion(aux)){
+                        valoresXYZ[i] = Integer.parseInt(aux);
+                    }
+                    i++;
+                }
+                
+                x = valoresXYZ[0];
+                y = valoresXYZ[1];
+                z = valoresXYZ[2];
+                
+                Ponto p = new Ponto(x,y);
+                pol3D.getPontos3D().add(i, new Ponto3D(p,z));
+                linha = lerArq.readLine();
+            }
+            
+            for(Ponto3D p: pol3D.getPontos3D()){
+                System.out.println(p.z);
+            }
+            
+        } catch (Exception e) {
+            System.out.println("DEU RUIM");
+        }
+    }//GEN-LAST:event_jbtnReadFileActionPerformed
+    
+    public boolean tryConversion(String st) {
+        try {
+            Integer.parseInt(st);
+            return true;
+        } catch (NumberFormatException nb) {
+            return false;
+        }
+    }
+    
     private void jbtnDesenhaCanvasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDesenhaCanvasActionPerformed
         // TODO add your handling code here:
         reDesenha();
@@ -1369,7 +1443,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton jbtnAtualizaMundo;
     private javax.swing.JButton jbtnClipping;
     private javax.swing.JButton jbtnDesenha;
@@ -1401,7 +1474,9 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JList<String> jlsPontos;
     private javax.swing.JRadioButton jrbCircunferencia;
     private javax.swing.JRadioButton jrbCurvas;
+    private javax.swing.JRadioButton jrbHomogenia;
     private javax.swing.JRadioButton jrbLinhas;
+    private javax.swing.JTextField jtxtCaminho;
     private javax.swing.JTextField jtxtGraus;
     private javax.swing.JTextField jtxtGraus1;
     private javax.swing.JTextField jtxtXd;
