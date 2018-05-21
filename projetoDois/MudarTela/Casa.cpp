@@ -23,8 +23,11 @@ using namespace std;
  * 
  */
 
-void Desenha(void){
-    glClear(GL_COLOR_BUFFER_BIT);
+int ang=0;
+int win=50;
+float aspecto, largura, altura;
+
+void DesenhaCasa(void){
     glColor3f(0.0f, 0.0f, 1.0f);
     glBegin(GL_QUADS);
         glVertex2f(-15.0f, -15.0f);
@@ -57,6 +60,33 @@ void Desenha(void){
         glVertex2f(0.0f,17.0f);
         glVertex2f(15.0f,5.0f);
     glEnd();
+}
+
+void FazMoldura(void){
+    glLineWidth(3);
+    glBegin(GL_LINE_LOOP);
+        glVertex2f(-win*aspecto,-win);
+        glVertex2f(-win*aspecto, win);
+        glVertex2f( win*aspecto, win);
+        glVertex2f( win*aspecto,-win);
+    glEnd();
+    
+    glLineWidth(1);
+}
+
+void Desenha(void){
+    glClear(GL_COLOR_BUFFER_BIT);
+    glViewport(0,0, largura,altura);
+    
+    DesenhaCasa();
+    FazMoldura();
+    
+    glViewport(largura,0, largura,altura);
+    
+    glRotatef(ang,0,0,1);
+    DesenhaCasa();
+    FazMoldura();
+    
     glFlush();
 }
 
@@ -64,19 +94,22 @@ void Inicializa(void){
     glClearColor(0,0,0,1);
 }
 
-void AlteraTamanho(int w, int h){
-    if(h==0)
-        h=1;
+void AlteraTamanhoJanela(GLsizei w, GLsizei h){
+    if(h==0) h=1;
     
-    glViewport(0,0,w,h);
+    largura = w/2;
+    altura = h;
+    aspecto = (float) largura/altura;
     
     glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+    //glLoadIdentity();
     
-    if(w<=h)
-        gluOrtho2D(-50.0f,50.0f,-50.0f*h/w,50.0f*h/w);
-    else
-        gluOrtho2D(-50.0f*w/h,50.0f*w/h,-50.0f,50.0f);
+    gluOrtho2D(-win*aspecto,win*aspecto,-win,win);
+}
+
+void cliqueMouse(int botao, int estado, int x, int y){
+    if(botao == GLUT_LEFT_BUTTON)
+        ang+=10;
 }
 
 int main(int argc, char** argv) {
@@ -86,8 +119,9 @@ int main(int argc, char** argv) {
     glutCreateWindow("Primeiro Programa");
     Inicializa();
     glutDisplayFunc(Desenha);
-    
-    glutReshapeFunc(AlteraTamanho);//Altera o tamanho da janela
+    glLoadIdentity();
+    glutMouseFunc(cliqueMouse);
+    glutReshapeFunc(AlteraTamanhoJanela);//Altera o tamanho da janela
     glutMainLoop();
     
     return 0;
