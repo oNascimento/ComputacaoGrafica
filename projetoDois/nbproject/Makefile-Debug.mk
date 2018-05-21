@@ -35,6 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/MudarTela/Casa.o \
+	${OBJECTDIR}/MudarTela/Lines.o \
 	${OBJECTDIR}/main.o
 
 
@@ -61,6 +63,16 @@ LDLIBSOPTIONS=-L/usr/include/GL -Wl,-rpath,'/usr/include/GL' -lglut -lGL -lGLU
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/projetodois: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/projetodois ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/MudarTela/Casa.o: MudarTela/Casa.cpp
+	${MKDIR} -p ${OBJECTDIR}/MudarTela
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/MudarTela/Casa.o MudarTela/Casa.cpp
+
+${OBJECTDIR}/MudarTela/Lines.o: MudarTela/Lines.cpp
+	${MKDIR} -p ${OBJECTDIR}/MudarTela
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/MudarTela/Lines.o MudarTela/Lines.cpp
 
 ${OBJECTDIR}/main.o: main.cpp
 	${MKDIR} -p ${OBJECTDIR}

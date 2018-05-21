@@ -8,6 +8,12 @@
     <logicalFolder name="SourceFiles"
                    displayName="Arquivos de Código-Fonte"
                    projectFiles="true">
+      <logicalFolder name="Casa" displayName="Casa" projectFiles="true">
+        <itemPath>MudarTela/Casa.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="MudarTela" displayName="Linhas" projectFiles="true">
+        <itemPath>MudarTela/Lines.cpp</itemPath>
+      </logicalFolder>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -26,6 +32,10 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>MudarTela</Elem>
+    <Elem>Casa</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="1">
@@ -47,6 +57,10 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="MudarTela/Casa.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="MudarTela/Lines.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
@@ -70,6 +84,10 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="MudarTela/Casa.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="MudarTela/Lines.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>

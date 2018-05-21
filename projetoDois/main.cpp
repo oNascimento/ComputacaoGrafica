@@ -118,7 +118,7 @@ int main(int argc, char** argv) {
     glutMotionFunc(movimenta);
     glutPassiveMotionFunc(movimentoMouse);
     glutReshapeFunc(AlteraTamanho);//Altera o tamanho da janela
-    //glutIdleFunc(ocioso);
+//    glutIdleFunc(ocioso);
     criaMenu();
     glutMainLoop();
     
