@@ -83,10 +83,12 @@ void Desenha(void){
     
     glViewport(largura,0, largura,altura);
     
+    glPushMatrix();
     glRotatef(ang,0,0,1);
     DesenhaCasa();
-    FazMoldura();
+    glPopMatrix();
     
+    FazMoldura();
     glFlush();
 }
 
@@ -102,14 +104,16 @@ void AlteraTamanhoJanela(GLsizei w, GLsizei h){
     aspecto = (float) largura/altura;
     
     glMatrixMode(GL_PROJECTION);
-    //glLoadIdentity();
+    glLoadIdentity();
     
     gluOrtho2D(-win*aspecto,win*aspecto,-win,win);
 }
 
 void cliqueMouse(int botao, int estado, int x, int y){
-    if(botao == GLUT_LEFT_BUTTON)
-        ang+=10;
+    if(botao == GLUT_LEFT_BUTTON){
+        ang += 2;
+        glutPostRedisplay();
+    }
 }
 
 int main(int argc, char** argv) {
@@ -119,7 +123,6 @@ int main(int argc, char** argv) {
     glutCreateWindow("Primeiro Programa");
     Inicializa();
     glutDisplayFunc(Desenha);
-    glLoadIdentity();
     glutMouseFunc(cliqueMouse);
     glutReshapeFunc(AlteraTamanhoJanela);//Altera o tamanho da janela
     glutMainLoop();

@@ -22,22 +22,43 @@ using namespace std;
  * 
  */
 
-void teclado(unsigned char tecla, int x, int y){
+bool stop = false;
+
+void timerTest(int value) {
+    if (stop) {
+        if (value == 1) {
+            printf(",");
+            glutTimerFunc(500, timerTest, 2);
+        } else {
+            if (value == 2) {
+                printf(".");
+                glutTimerFunc(50, timerTest, 1);
+            }
+        }
+    }else
+        printf("!");
+
+}
+
+void teclado(unsigned char tecla, int x, int y) {
     int modificadores = glutGetModifiers();
-    
-    if(modificadores & GLUT_ACTIVE_ALT) 
+
+    if (modificadores & GLUT_ACTIVE_ALT)
         printf("alt\n");
-    if(modificadores & GLUT_ACTIVE_SHIFT) 
+    if (modificadores & GLUT_ACTIVE_SHIFT)
         printf("shift\n");
-    if(modificadores & GLUT_ACTIVE_CTRL) 
+    if (modificadores & GLUT_ACTIVE_CTRL)
         printf("ctrl\n");
-    
-    switch(tecla){
-        case 27 :
-                    printf("Tchau");
-                    exit(0);
+
+    switch (tecla) {
+        case 27:
+            printf("Tchau");
+            exit(0);
+        case 'p':
+            glutTimerFunc(50, timerTest, 0);
+            break;
         default:
-                    printf("vc apertou [%c] = [%d]\n",tecla,tecla);
+            printf("vc apertou [%c] = [%d]\n", tecla, tecla);
     }
 }
 
@@ -46,42 +67,47 @@ void Desenha(void) {
     glFlush();
 }
 
-void Inicializa(void){
-    glClearColor(0,0,0,1);
+void Inicializa(void) {
+    glClearColor(0, 0, 0, 1);
 }
 
-void cliqueMouse(int botao, int estado, int x, int y){
-    if(botao == GLUT_LEFT_BUTTON)
-        printf("Mouse Esquerdo [%d] [%d]\n", x,y);
-    if(botao == GLUT_RIGHT_BUTTON)
-        printf("Mouse Direito [%d] [%d]\n", x,y);
+void cliqueMouse(int botao, int estado, int x, int y) {
+    if (botao == GLUT_LEFT_BUTTON)
+        printf("Mouse Esquerdo [%d] [%d]\n", x, y);
+    if (botao == GLUT_RIGHT_BUTTON)
+        printf("Mouse Direito [%d] [%d]\n", x, y);
 }
 
-void movimenta(int x, int y){
+void movimenta(int x, int y) {
     printf("MousePressionado [%d] [%d]\n", x, y);
 }
 
-void movimentoMouse(int x, int y){
+void movimentoMouse(int x, int y) {
     printf("[%d] [%d]\n", x, y);
 }
 
-void ocioso(){
+void ocioso() {
     printf(".");
 }
 
-void funcaoMenu(int opcao){
-    switch(opcao){
-        case 0: glClearColor(1,0,0,1);break;
-        case 1: glClearColor(0,1,0,1);break;
-        case 2: glClearColor(0,0,1,1);break;
-        case 3: glClearColor(0,0,0,1);break;
-        case 4: glClearColor(1,1,1,1);break;
+void funcaoMenu(int opcao) {
+    switch (opcao) {
+        case 0: glClearColor(1, 0, 0, 1);
+            break;
+        case 1: glClearColor(0, 1, 0, 1);
+            break;
+        case 2: glClearColor(0, 0, 1, 1);
+            break;
+        case 3: glClearColor(0, 0, 0, 1);
+            break;
+        case 4: glClearColor(1, 1, 1, 1);
+            break;
     }
-    
+
     glutPostRedisplay();
 }
 
-void criaMenu(){
+void criaMenu() {
     glutCreateMenu(funcaoMenu);
     glutAddMenuEntry("Vermelho", 0);
     glutAddMenuEntry("Verde", 1);
@@ -91,23 +117,23 @@ void criaMenu(){
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
-void AlteraTamanho(int w, int h){
-    if(h==0)
-        h=1;
-    
-    glViewport(0,0,w,h);
-    
+void AlteraTamanho(int w, int h) {
+    if (h == 0)
+        h = 1;
+
+    glViewport(0, 0, w, h);
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    
-    if(w<=h)
-        gluOrtho2D(-50.0f,50.0f,-50.0f*h/w,50.0f*h/w);
+
+    if (w <= h)
+        gluOrtho2D(-50.0f, 50.0f, -50.0f * h / w, 50.0f * h / w);
     else
-        gluOrtho2D(-50.0f*w/h,50.0f*w/h,-50.0f,50.0f);
+        gluOrtho2D(-50.0f * w / h, 50.0f * w / h, -50.0f, 50.0f);
 }
 
 int main(int argc, char** argv) {
-    
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutCreateWindow("Primeiro Programa");
@@ -117,11 +143,12 @@ int main(int argc, char** argv) {
     glutMouseFunc(cliqueMouse);
     glutMotionFunc(movimenta);
     glutPassiveMotionFunc(movimentoMouse);
-    glutReshapeFunc(AlteraTamanho);//Altera o tamanho da janela
-//    glutIdleFunc(ocioso);
+    glutReshapeFunc(AlteraTamanho); //Altera o tamanho da janela
+    //    glutIdleFunc(ocioso);
+    glutTimerFunc(50, timerTest, 1);
     criaMenu();
     glutMainLoop();
-    
+
     return 0;
 }
 
