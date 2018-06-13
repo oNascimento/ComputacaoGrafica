@@ -124,6 +124,10 @@ public:
     void positivo();
     void vemProPau();
     void home();
+    void nao();
+    void chaves();
+    void MoveOssoMedio();
+    void MoveOssoMenor();
 protected:
     float grossura;
 
@@ -204,6 +208,8 @@ void Mao::setCurvatura(int dedo,float curv)
         case 4: dedao.setCurvatura(curv); break;
     }
 }
+
+//void Mao::setCurvatura(int dedo, float curv)
 
 void Mao::abrir(bool tudoJunto)
 {
@@ -378,6 +384,7 @@ void Mao::vemProPau()
     }
 
 
+
 }
 
 void Mao::home()
@@ -416,13 +423,76 @@ void Mao::home()
 
 void Mao::dedoDuro()
 {
+	//Fecha a mao e aponta o dedo
+	fechar(true);
+	for(int i = 0 ; i < 90; i+=10)
+    {
+        ang2 += 10;
+        ang3 += 10;
+        display();
+    }
+    for (int j=getCurvatura(3);j>=0;j-=10)
+    {
+        setCurvatura(3,j);
+        display();
+    }
+    //Movimento final de apontar
+    for(int j = 0 ;j < 3 ; j++)
+    {
+        ang += 5;
+        display();
+    }
+    for(int i = 0; i< 3; i++)
+    {
+        for(int j = 0 ;j < 6 ; j++)
+        {
+            ang -= 5;
+            display();
+        }
+        for(int j = 0 ;j < 6 ; j++)
+        {
+            ang += 5;
+            display();
+        }
+    }
+    for(int j = 0 ;j < 3 ; j++)
+    {
+        ang -= 5;
+        display();
+    }
 }
 
 void Mao::positivo()
 {
+	fechar(true);
+	for(int i = 0 ; i < 90; i+=10)
+    {
+        ang2 += 10;
+        ang3 += 10;
+        display();
+    }
+    for (int j=getCurvatura(4);j>=0;j-=10)
+    {
+        setCurvatura(4,j);
+        display();
+    }
 }
 
+void Mao::nao()
+{
+}
 
+void Mao::chaves()
+{
+}
+
+void Mao::MoveOssoMedio()
+{
+}
+
+void Mao::MoveOssoMenor()
+{
+}
 /////////////////////////////////////////////////////////////
 Mao m(1.0);
 
@@ -489,7 +559,7 @@ void idle()
 
 void keyboard (unsigned char key, int x, int y)
 {
-    switch(key)
+	switch(key)
     {
         case 'q':
             if (m.getCurvatura(0) < 100)
@@ -577,20 +647,32 @@ void keyboard (unsigned char key, int x, int y)
                 ang3 += 360;
             break;
         case '1' :
+        	m.home();
             m.tchau();
             break;
         case '2' :
+        	m.home();
             m.fuck();
             break;
         case '3' :
+        	m.home();
             m.hangloose();
             break;
         case '4' :
+        	m.home();
             m.vemProPau();
             break;
-        case 8 :
+        case '8' :
             m.home();
             break;
+        case '5':
+        	m.home();
+        	m.dedoDuro();
+        	break;
+       	case '6':
+       		m.home();
+       		m.positivo();
+       		break;
 
         default:
             return;
@@ -608,10 +690,10 @@ int main(int argc, char** argv)
     init ();
 
     printf("FullScreen?(y/n) ");
-    if (getchar() == 'y')
-        glutFullScreen();
+    //if (getchar() == 'y')
+        //glutFullScreen();
 
-    glutIdleFunc(idle);
+    //glutIdleFunc(idle);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
