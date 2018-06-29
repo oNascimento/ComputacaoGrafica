@@ -1,0 +1,13 @@
+5 - Dedo Duro
+6 - Positivo
+7 - Nao
+i - Chaves(Isso Isso Isso)
+z - Move Osso Medio - Mindinho
+x - Move Osso Medio - Anelar
+c - Move Osso Medio - Maior
+v - Move Osso Medio - Indicador
+b - Move Osso Medio - Dedao
+h - Move Osso Menor - Mindinho
+j - Move Osso Menor - Anelar
+k - Move Osso Menor - Maior
+l - Move Osso Menor - Indicador

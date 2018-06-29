@@ -65,6 +65,8 @@ public:
     Dedo(float comprimento, float largura);
     void desenha() {a.desenha();}
     void setCurvatura(float curvatura);
+    void setCurvaturaMedio(float curvatura);
+    void setCurvaturaMenor(float curvatura);
     float getCurvatura() {return a.getAngulo()*100/90;}
 
 protected:
@@ -83,6 +85,16 @@ void Dedo::setCurvatura(float curvatura)
     a.setAngulo(curvatura*0.9);
     b.setAngulo(curvatura*0.9);
 }
+
+void Dedo::setCurvaturaMedio(float curvatura)
+{
+    a.setAngulo(curvatura*0.9);
+}
+
+void Dedo::setCurvaturaMenor(float curvatura)
+{
+    b.setAngulo(curvatura*0.9);
+}
 ////////////////////////////////////////////////////////////
 class Dedao
 {
@@ -90,6 +102,7 @@ public:
     Dedao(float comprimento, float largura);
     void desenha() {a.desenha();}
     void setCurvatura(float curvatura);
+    void setCurvaturaMedio(float curvatura);
     float getCurvatura() {return a.getAngulo()*100/90;}
 
 protected:
@@ -106,6 +119,11 @@ void Dedao::setCurvatura(float curvatura)
 {
     a.setAngulo(curvatura*0.9);
 }
+
+void Dedao::setCurvaturaMedio(float curvatura)
+{
+    a.setAngulo(curvatura*0.9);
+}
 ////////////////////////////////////////////////////
 
 class Mao
@@ -114,6 +132,7 @@ public:
     Mao(float grossura);
     void desenha();
     void setCurvatura(int dedo,float curv);
+    void setCurvaturaFixa(int dedo,float curv);
     float getCurvatura(int dedo) {return curvatura[dedo];}
     void abrir(bool tudoJunto = false);
     void fechar(bool tudoJunto = false);
@@ -126,8 +145,9 @@ public:
     void home();
     void nao();
     void chaves();
-    void MoveOssoMedio();
-    void MoveOssoMenor();
+    void MoveOssoMedio(int dedo);
+    void MoveOssoMenor(int dedo);
+    void Spoky();
 protected:
     float grossura;
 
@@ -137,6 +157,7 @@ protected:
     Dedo indicador;
     Dedao dedao;
     float curvatura[5];
+  	float curvaturaZ[5];
 };
 
 Mao::Mao(float gros)
@@ -147,8 +168,10 @@ Mao::Mao(float gros)
     indicador(6*grossura,grossura),
     dedao(4*grossura,grossura)
 {
-    for (int i=0;i<5;i++)
+    for (int i=0;i<5;i++){
         curvatura[i] = 0;
+    	curvaturaZ[i] = 0;
+    }
 }
 
 void Mao::desenha()
@@ -159,23 +182,27 @@ void Mao::desenha()
         glTranslatef(-3*grossura,0.0,0.0);
         glutSolidSphere(grossura,8,8);
         glRotatef(curvatura[0]*0.9,1.0,0.0,0.0);
+        glRotatef(curvaturaZ[0]*0.9,0.0,0.0,1.0);
         mindinho.desenha();
       glPopMatrix();
       glPushMatrix();
         glTranslatef(-1.5*grossura,0.0,0.0);
         glutSolidSphere(grossura,8,8);
         glRotatef(curvatura[1]*0.9,1.0,0.0,0.0);
+        glRotatef(curvaturaZ[1]*0.9,0.0,0.0,1.0);
         anelar.desenha();
       glPopMatrix();
       glPushMatrix();
         glutSolidSphere(grossura,8,8);
         glRotatef(curvatura[2]*0.9,1.0,0.0,0.0);
+        glRotatef(curvaturaZ[2]*0.9,0.0,0.0,1.0);
         maior.desenha();
       glPopMatrix();
       glPushMatrix();
         glTranslatef(1.5*grossura,0.0,0.0);
         glutSolidSphere(grossura,8,8);
         glRotatef(curvatura[3]*0.9,1.0,0.0,0.0);
+        glRotatef(curvaturaZ[3]*0.9,0.0,0.0,1.0);
         indicador.desenha();
       glPopMatrix();
       glPushMatrix();
@@ -209,7 +236,10 @@ void Mao::setCurvatura(int dedo,float curv)
     }
 }
 
-//void Mao::setCurvatura(int dedo, float curv)
+void Mao::setCurvaturaFixa(int dedo, float curv)
+{
+	curvatura[dedo] = curv;
+}
 
 void Mao::abrir(bool tudoJunto)
 {
@@ -480,18 +510,94 @@ void Mao::positivo()
 
 void Mao::nao()
 {
+	fechar(true);
+	for (int j=getCurvatura(3);j>=0;j-=10)
+    {
+        setCurvatura(3,j);
+        display();
+    }
+    for(int i = 0; i <= 2; i++)
+    {
+    	for (int j=curvaturaZ[3];j>=-30;j-=10){
+    		curvaturaZ[3] = j;
+    	    display();
+    	}
+    	for (int j=curvaturaZ[3];j<=30;j+=10){
+    		curvaturaZ[3] = j;
+    	    display();
+    	}	
+    }
+    for (int j=curvaturaZ[3];j>=0;j-=10){
+    		curvaturaZ[3] = j;
+    	    display();
+   	}
+    
 }
 
 void Mao::chaves()
 {
+	setCurvaturaFixa(0,120);
+	setCurvaturaFixa(1,120);
+	setCurvaturaFixa(2,120);
+	setCurvaturaFixa(3,90);
+	setCurvaturaFixa(4,180);
+	for(int j = 0; j <= 2 ; j++){
+		for(float i = 90 ; i <= 120 ; i++){
+			setCurvaturaFixa(3,i);
+			display();
+		}
+		for(float i = 120 ; i >= 90 ; i--){
+			setCurvaturaFixa(3,i);
+			display();
+		}
+
+	}
+}	
+
+void Mao::MoveOssoMedio(int dedo)
+{
+	float curv = 90;
+
+	switch(dedo){
+		case 0: mindinho.setCurvaturaMedio(curv); break;
+        case 1: anelar.setCurvaturaMedio(curv); break;
+        case 2: maior.setCurvaturaMedio(curv); break;
+        case 3: indicador.setCurvaturaMedio(curv); break;
+        case 4: dedao.setCurvaturaMedio(curv); break;
+
+	}
 }
 
-void Mao::MoveOssoMedio()
+void Mao::MoveOssoMenor(int dedo)
 {
+	float curv = 90;
+
+	switch(dedo){
+		case 0: mindinho.setCurvaturaMenor(curv); break;
+        case 1: anelar.setCurvaturaMenor(curv); break;
+        case 2: maior.setCurvaturaMenor(curv); break;
+        case 3: indicador.setCurvaturaMenor(curv); break;
+    }
 }
 
-void Mao::MoveOssoMenor()
-{
+void Mao::Spoky(){
+
+	for(int i = 0; i < 2; i++){
+		for (int j=curvaturaZ[3];j>=-30;j-=5){
+    		curvaturaZ[3] = j;
+    		curvaturaZ[2] = j;
+    		curvaturaZ[0] = j*(-1);
+    		curvaturaZ[1] = j*(-1);
+    		display();
+    	}
+    	for (int j=curvaturaZ[3];j<=0;j+=5){
+    		curvaturaZ[3] = j;
+    		curvaturaZ[2] = j;
+    		curvaturaZ[0] = j*(-1);
+    		curvaturaZ[1] = j*(-1);
+    		display();
+    	}
+	}
 }
 /////////////////////////////////////////////////////////////
 Mao m(1.0);
@@ -673,7 +779,54 @@ void keyboard (unsigned char key, int x, int y)
        		m.home();
        		m.positivo();
        		break;
-
+       	case '7':
+       		m.home();
+       		m.nao();
+       		break;
+       	case 'i':
+       		m.home();
+       		m.chaves();
+       		break;
+       	case 'z':
+       		m.home();
+       		m.MoveOssoMedio(0);
+       		break;
+       	case 'x':
+       		m.home();
+       		m.MoveOssoMedio(1);
+       		break;
+       	case 'c':
+       		m.home();
+       		m.MoveOssoMedio(2);
+       		break;
+       	case 'v':
+       		m.home();
+       		m.MoveOssoMedio(3);
+       		break;
+       	case 'b':
+       		m.positivo();
+       		m.MoveOssoMedio(4);
+       		break;
+       	case 'h':
+       		m.home();
+       		m.MoveOssoMenor(0);
+       		break;
+       	case 'j':
+       		m.home();
+       		m.MoveOssoMenor(1);
+       		break;
+       	case 'k':
+       		m.home();
+       		m.MoveOssoMenor(2);
+       		break;
+       	case 'l':
+       		m.home();
+       		m.MoveOssoMenor(3);
+       		break;
+       	case 'o':
+       		m.home();
+       		m.Spoky();
+       		break;
         default:
             return;
     }
@@ -689,7 +842,7 @@ int main(int argc, char** argv)
     glutCreateWindow (argv[0]);
     init ();
 
-    printf("FullScreen?(y/n) ");
+    //printf("FullScreen?(y/n) ");
     //if (getchar() == 'y')
         //glutFullScreen();
 
