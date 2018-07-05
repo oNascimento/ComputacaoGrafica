@@ -1,20 +1,35 @@
 #include <math.h>
+#include <unistd.h>
+#include "SOIL/SOIL.h"
 #include "Body.cpp"
+
+#define GRAU_RAD 0.017453292519943 
 #define PASSO_TEMPO 50
 
 Body body(1.0);
 float obsteta = 0.79, obsfi = 1.5, distancia = 50.0;
 int tam = 0;
+float Posicaox = 0.0; 
+double passo = 0.0;
+GLuint texture[1];
 
-void init(void)
+
+int LoadGLTextures()
 {
-    //LoadGLTextures();
-    glClearColor (0.0, 0.0, 0.0, 0.0);
-    glClearDepth(1.0);				// Enables Clearing Of The Depth Buffer
-    glDepthFunc(GL_LEQUAL);				// The Type Of Depth Test To Do
-    glEnable(GL_DEPTH_TEST);			// Enables Depth Testing
-    glShadeModel(GL_SMOOTH);			// Enables Smooth Color Shading
+    
+    texture[0] = SOIL_load_OGL_texture("Images/Grama.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MULTIPLY_ALPHA);
+
+    if (texture[0] == 0){
+        //printf("oi");
+        return false;
+    }
+    
+    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    return true;
 }
+
 
 void Piso(void)
 {
@@ -24,15 +39,17 @@ void Piso(void)
     {
         for(j = -20; j <= 20; j++)
         {
-            if((i + j) % 2 == 0) glColor3f(0.0, 1.0, 0.0);
-            else glColor3f(0.0, 0.0, 1.0);
+             glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, texture[0]);
             glBegin(GL_QUADS);
                 glNormal3f(0,0,1);
-                glVertex3f(i * c, j * c, 0.0);
-                glVertex3f(i * c + c, j * c, 0.0);
-                glVertex3f(i * c + c, j * c + c, 0.0);
-                glVertex3f(i * c, j * c + c, 0.0);
+                glTexCoord2f(0,0);glVertex3f(i * c, j * c, 0.0);
+                glTexCoord2f(1,0);glVertex3f(i * c + c, j * c, 0.0);
+                glTexCoord2f(1,1);glVertex3f(i * c + c, j * c + c, 0.0);
+                glTexCoord2f(0,1);glVertex3f(i * c, j * c + c, 0.0);
             glEnd();
+            glDisable(GL_TEXTURE_2D);
+
         }
     }
 }
@@ -41,8 +58,6 @@ void display(void)
 {
     GLfloat posicao_luz[] = {500.0, 500.0, 500.0, 1.0}; // Posição Luz
     double obsx, obsy, obsz;
-    static float Posicaox = 0.0;  //  Posicao do Robô
-    static double passo = 0.0;
 
     // Calcula a distância do observador
     obsx = Posicaox + distancia * sin(obsfi) * cos(obsteta);
@@ -61,13 +76,13 @@ void display(void)
 
     Piso();
 
-    glTranslatef(0,0,10);
+    glTranslatef(Posicaox, 0.0, 5.0); 
 
     glPushMatrix();
-      glColor3f(1.0,1.0,1.0);
-      body.Draw();
-      //body.Draw();
+        glColor3f(1.0,1.0,1.0);
+        body.Draw();
     glPopMatrix();
+    
     glutSwapBuffers();
 }
 
@@ -128,8 +143,53 @@ void Timer(int w)
     glutTimerFunc(PASSO_TEMPO,Timer,1);
 }
 
+void MovFly(){
+    float Mov[8] = {0.5,1,0.5,0,-0.5,-1,-0.5,0};
+    
+    for(int i = 0; i < 5; i++){
+        
+        for (int j = 0; j < 8; j++)
+        {
+            Posicaox += fabs(3.0 * sin((70 + passo) * GRAU_RAD));  //  Calcula a posição do Passaro
+            passo = fmod(passo + 0.5, 360.0);
+            body.Voar(Mov[j]);
+            sleep(0.1);
+            display();
+        }
+    }
+}
+
+void Stop(){
+    float MovY[5] = {0, 0.1, 0.2, 0.3, 0.35};
+
+    for (int j = 0; j < 5; j++)
+    {
+        body.BodyDown(MovY[j],MovY[j]);
+        body.FecharAsa();
+        display();
+    }
+    sleep(3);
+    for (int j = 5; j > 0; j--)
+    {
+        body.BodyDown(MovY[j],MovY[j]);
+        body.AbrirAsa();
+        display();
+    }
+}
+
+
+
 void MovimentaTeclado(unsigned char tecla, int x, int y)
-{}
+{
+    switch(tecla){
+        case 'a':
+            MovFly();
+            break;
+        case 's':
+            Stop();
+            break;
+    }
+}
 
 int main(int argc, char** argv)
 {
@@ -137,13 +197,12 @@ int main(int argc, char** argv)
     glutInitDisplayMode (GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(150, 50);
-    glutCreateWindow (argv[0]);
-    //init();
-    //printf("FullScreen?(y/n) ");
-    //if (getchar() == 'y')
-        //glutFullScreen();
+    glutCreateWindow ("Passarinho Que Som e Esse");
 
-    //glutIdleFunc(idle);
+    if(!LoadGLTextures()){
+        return 0;
+    }
+
     glutDisplayFunc(display);
     glutReshapeFunc(Ajustedimensao);
     glutMotionFunc(MoveMouse);
